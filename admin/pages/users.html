@@ -1,0 +1,109 @@
+<section class="content">
+  <div class="container-fluid">
+    <div class="card">
+      <div class="card-header">
+        <h3 class="card-title">Manajemen User</h3>
+        <button role="button" class="btn btn-success btn-sm float-right" data-toggle="modal" data-target="#modal-default">
+          <i class="fa fa-user-plus"></i> Tambah User
+        </button>
+      </div>
+      <div class="card-body">
+        <div class="table-responsive">
+          <table id="tablerifkkimaulana" class="table table-bordered table-striped">
+            <thead>
+              <tr>
+                <th class="text-center">#</th>
+                <th>Nama Lengkap</th>
+                <th>Username</th>
+                <th>Level User</th>
+                <th class="text-center">Action</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td class="text-center">1</td>
+                <td>John Doe</td>
+                <td>johndoe</td>
+                <td>Admin</td>
+                <td class="text-center">
+                  <a href="#" class="btn btn-sm btn-info"><i class="fas fa-edit"></i></a>
+                  <a href="#" class="btn btn-sm btn-danger"><i class="fas fa-trash"></i></a>
+                </td>
+              </tr>
+              <tr>
+                <td class="text-center">2</td>
+                <td>Jane Doe</td>
+                <td>janedoe</td>
+                <td>User</td>
+                <td class="text-center">
+                  <a href="#" class="btn btn-sm btn-info"><i class="fas fa-edit"></i></a>
+                  <a href="#" class="btn btn-sm btn-danger"><i class="fas fa-trash"></i></a>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="modal fade" id="modal-default">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h6 class="modal-title">Tambah Pengguna Baru</h6>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <div class="form-group">
+          <label for="nama_lengkap">Nama Lengkap <small class="text-danger"> *Tidak boleh kosong</small> </label>
+          <input type="text" class="form-control" id="nama_lengkap" name="nama_lengkap" required />
+        </div>
+        <div class="form-group">
+          <label for="Username">Username <small class="text-danger"> *Tidak boleh kosong</small></label>
+          <input type="text" class="form-control" id="username" name="username" required />
+        </div>
+        <div class="row">
+          <div class="col-sm-6">
+            <div class="form-group">
+              <label for="password">Password <small class="text-danger"> *Tidak boleh kosong</small></label>
+              <input type="text" id="password" class="form-control" name="password" required />
+            </div>
+          </div>
+          <div class="col-sm-6">
+            <div class="form-group">
+              <label for="re-password">Ulangi Password <small class="text-danger"> *Tidak boleh kosong</small></label>
+              <input type="text" class="form-control" id="re-password" name="re-password" required />
+            </div>
+          </div>
+        </div>
+        <div class="form-group">
+          <label for="telpon">Nomor Telpon <small class="text-success"> *Optional</small></label>
+          <input type="number" class="form-control" id="telpon" name="telpon" />
+        </div>
+        <div class="form-group">
+          <label for="email">Email <small class="text-success"> *Optional</small></label>
+          <input type="email" class="form-control" id="email" name="email" />
+        </div>
+        <div class="form-group">
+          <label for="customFile">Upload Foto Pribadi <small class="text-success"> *Optional</small></label>
+          <div class="custom-file">
+            <input type="file" class="custom-file-input" id="customFile" />
+            <label class="custom-file-label" for="customFile">Upload foto kamu disini...</label>
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer float-right">
+        <button type="button" class="btn btn-outline-secondary" data-dismiss="modal">Close</button>
+        <button type="button" class="btn btn-primary">Simpan</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  customstyle();
+</script>
