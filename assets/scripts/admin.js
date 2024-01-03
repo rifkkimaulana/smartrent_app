@@ -1,4 +1,12 @@
 $(document).ready(function () {
+  // cek user login
+  var userId = localStorage.getItem("id");
+  var userLevel = localStorage.getItem("user_level");
+
+  if (!userId && !userLevel) {
+    window.location.href = "/auth";
+  }
+
   navbar();
   header();
   footer();
@@ -284,7 +292,7 @@ function riwayat() {
             },
             className: "text-center",
           },
-          { data: "user_id" },
+          { data: "user_id", render: renderNamaLengkap },
           { data: "aktivitas" },
           { data: "created_at", className: "text-center" },
         ],
@@ -317,7 +325,7 @@ function transaksi() {
             className: "text-center",
           },
           { data: "no_transaksi" },
-          { data: "user_id" },
+          { data: "user_id", render: renderNamaLengkap },
           { data: "tanggal_penyewaan" },
           { data: "tanggal_pengembalian" },
           { data: "total_harga" },
@@ -376,7 +384,7 @@ function pembayaran() {
           },
           { data: "reference" },
           { data: "no_transaksi" },
-          { data: "user_id" },
+          { data: "user_id", render: renderNamaLengkap },
           { data: "channel" },
           { data: "pembayaran" },
           { data: "status" },
@@ -398,6 +406,7 @@ function pembayaran() {
   });
 }
 
+// Bagian Inventaris Barang
 function inventaris() {
   $.ajax({
     url: "../admin/pages/inventaris/daftar_inventaris.html",
@@ -434,7 +443,7 @@ function inventaris() {
             className: "text-center",
           },
           { data: "nama_barang" },
-          { data: "kategori_id" },
+          { data: "kategori_id", render: renderNamaKategori },
           { data: "harga_sewa" },
           { data: "status" },
           { data: "durasi_sewa" },
@@ -492,14 +501,150 @@ function kategori_inventaris() {
             render: function (data, type, v) {
               return `
               <div class="text-center">
-              <a role="button" onclick="ubahKategori(${v.id})" class="btn btn-sm btn-info"><i class="fas fa-edit"></i></a>
-              <a role="button" data-toggle="modal" data-target="#hapusKategori${v.id}" class="btn btn-sm btn-danger"><i class="fas fa-trash"></i></a>
+              <a role="button" onclick="formEditKategori(${v.id})" class="btn btn-sm btn-info"><i class="fas fa-edit"></i></a>
+              <a role="button" onclick="formHapusKategori(${v.id})" class="btn btn-sm btn-danger"><i class="fas fa-trash"></i></a>
               </div>
             `;
             },
             className: "text-center",
           },
         ],
+      });
+    },
+  });
+}
+
+function tambahModalKategori() {
+  $("#id").val("");
+  $("#nama_kategori").val("");
+  $("#modalKategori").modal("show");
+}
+function formEditKategori(id) {
+  $.ajax({
+    type: "GET",
+    url: baseUrl + "kategori/" + id,
+
+    success: function (response) {
+      console.log(id);
+
+      var user = response.data[0];
+      $("#id").val(user.id);
+      $("#nama_kategori").val(user.nama_lengkap);
+
+      $("#modalKategori").modal("show");
+    },
+    error: function (error) {
+      Swal.fire({
+        icon: "error",
+        title: "Oops...",
+        text: error.responseJSON.message,
+      });
+    },
+  });
+}
+function formHapusKategori(id) {
+  $.ajax({
+    type: "GET",
+    url: baseUrl + "kategori/" + id,
+
+    success: function (response) {
+      var kt = response.data[0];
+      $("#hapusButton").attr("data-id", kt.id);
+      $("#nama_hapus").text(kt.nama_kategori);
+
+      $("#modalHapusKategori").modal("show");
+    },
+    error: function (error) {
+      Swal.fire({
+        icon: "error",
+        title: "Oops...",
+        text: error.responseJSON.message,
+      });
+    },
+  });
+}
+function submitKategori() {
+  var form = document.getElementById("formKategori");
+  var formData = new FormData(form);
+
+  $.ajax({
+    type: "POST",
+    url: baseUrl + "kategori/",
+    data: formData,
+    processData: false,
+    contentType: false,
+    success: function (response) {
+      if (response && (response.status === 200 || response.status === 201)) {
+        Swal.fire({
+          icon: "success",
+          title: "Sukses",
+          text: response.data.messages,
+          toast: true,
+          position: "top-end",
+          showConfirmButton: false,
+          timer: 3000,
+        });
+      } else {
+        Swal.fire({
+          icon: "error",
+          title: "Oops...",
+          text: response.data.messages,
+        });
+      }
+
+      $("#modalKategori").modal("hide");
+      $(".modal-backdrop").remove();
+
+      // Open pages success
+      kategori_inventaris();
+    },
+    error: function (error) {
+      Swal.fire({
+        icon: "error",
+        title: "Oops...",
+        text: error.responseJSON.message,
+      });
+      $("#modalKategori").modal("hide");
+      $(".modal-backdrop").remove();
+    },
+  });
+}
+
+function hapusKategori() {
+  $.ajax({
+    url: baseUrl + "kategori/" + $("#hapusButton").attr("data-id"),
+    method: "DELETE",
+    success: function (response) {
+      if (response && response.status === 204) {
+        Swal.fire({
+          icon: "success",
+          title: "Sukses",
+          text: "Kategori berhasil ditambahkan",
+          toast: true,
+          position: "top-end",
+          showConfirmButton: false,
+          timer: 3000,
+        });
+      } else {
+        Swal.fire({
+          icon: "error",
+          title: "Oops...",
+          text: error.responseJSON.message,
+        });
+      }
+      // open pages success
+      kategori_inventaris();
+
+      $("#modalHapusKategori").modal("hide");
+      $(".modal-backdrop").remove();
+    },
+    error: function (error) {
+      $("#modalHapusKategori").modal("hide");
+      $(".modal-backdrop").remove();
+      Swal.fire({
+        icon: "error",
+        title: "Oops...",
+        text: error.responseJSON.message,
       });
     },
   });
@@ -592,7 +737,7 @@ function paket_perjalanan() {
           { data: "nama_paket" },
           { data: "kuota_peserta" },
           { data: "harga_paket" },
-          { data: "kategori_id" },
+          { data: "kategori_id", render: renderNamaKategoriPerjalanan },
 
           {
             data: null,
@@ -697,8 +842,8 @@ function pemesanan_perjalanan() {
             },
             className: "text-center",
           },
-          { data: "user_id" },
-          { data: "paket_id" },
+          { data: "user_id", render: renderNamaLengkap },
+          { data: "paket_id", render: renderPaketPerjalanan },
           { data: "jumlah_peserta" },
           { data: "total_pembayaran" },
           { data: "status_pembayaran" },
@@ -746,10 +891,10 @@ function bank() {
             },
             className: "text-center",
           },
-          { data: "user_id" },
-          { data: "daftar_bank_id" },
+          { data: "user_id", render: renderNamaLengkap },
           { data: "nama_lengkap" },
           { data: "nomor_rekening" },
+          { data: "daftar_bank_id", render: renderBank },
           {
             data: null,
             render: function (data, type, v) {
@@ -860,4 +1005,69 @@ function open_preload() {
       }, 2000);
     },
   });
+}
+
+function renderNamaLengkap(data, type, v) {
+  $.ajax({
+    url: baseUrl + "users/" + v.user_id,
+    type: "GET",
+    async: false,
+    success: function (response) {
+      data = response.data[0].nama_lengkap;
+    },
+  });
+
+  return data;
+}
+
+function renderNamaKategori(data, type, v) {
+  $.ajax({
+    url: baseUrl + "kategori/" + v.kategori_id,
+    type: "GET",
+    async: false,
+    success: function (response) {
+      data = response.data[0].nama_kategori;
+    },
+  });
+
+  return data;
+}
+
+function renderNamaKategoriPerjalanan(data, type, v) {
+  $.ajax({
+    url: baseUrl + "kategori_perjalanan/" + v.kategori_id,
+    type: "GET",
+    async: false,
+    success: function (response) {
+      data = response.data[0].nama_kategori;
+    },
+  });
+
+  return data;
+}
+
+function renderPaketPerjalanan(data, type, v) {
+  $.ajax({
+    url: baseUrl + "paket_perjalanan/" + v.paket_id,
+    type: "GET",
+    async: false,
+    success: function (response) {
+      data = response.data[0].nama_paket;
+    },
+  });
+
+  return data;
+}
+
+function renderBank(data, type, v) {
+  $.ajax({
+    url: baseUrl + "daftar_bank/" + v.daftar_bank_id,
+    type: "GET",
+    async: false,
+    success: function (response) {
+      data = response.data[0].nama_bank;
+    },
+  });
+
+  return data;
 }
