@@ -1,7 +1,8 @@
 app_name = "Smart Rent";
 
 $(function () {
-  open_preload();
+  //open_preload();
+  //load home
   home();
 
   $(".footer-bar-6 .circle-nav").append("<strong><u></u></strong>");
@@ -9,7 +10,7 @@ $(function () {
 });
 
 function shop() {
-  open_preload();
+  //open_preload();
   $.ajax({
     type: "GET",
     url: "page-shop.html",
@@ -27,7 +28,7 @@ function shop() {
 }
 
 function kategori() {
-  open_preload();
+  //open_preload();
   $.ajax({
     type: "GET",
     url: "page-kategori.html",
@@ -45,7 +46,7 @@ function kategori() {
 }
 
 function home() {
-  open_preload();
+  // open_preload();
   $.ajax({
     type: "GET",
     url: "page-home.html",
@@ -64,7 +65,7 @@ function home() {
 }
 
 function transaksi() {
-  open_preload();
+  // open_preload();
   $.ajax({
     type: "GET",
     url: "page-kategori.html",
@@ -82,7 +83,7 @@ function transaksi() {
 }
 
 function profil() {
-  open_preload();
+  //open_preload();
   $.ajax({
     type: "GET",
     url: "page-profil.html",

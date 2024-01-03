@@ -99,67 +99,68 @@ function fetch_userData() {
                   </div>
                 </div>`;
           modal_ubah += `
-                <!-- Form Pengguna -->
-                <div class="modal fade" id="modalPengguna_${v.id}">
-                  <div class="modal-dialog">
-                    <div class="modal-content">
-                      <div class="modal-header">
-                        <h6 class="modal-title">Tambah Pengguna Baru</h6>
-                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                          <span aria-hidden="true">&times;</span>
-                        </button>
+          <!-- Form Pengguna -->
+          <div class="modal fade" id="modalPengguna_${v.id}">
+            <div class="modal-dialog">
+              <div class="modal-content">
+                <div class="modal-header">
+                  <h6 class="modal-title">Tambah Pengguna Baru</h6>
+                  <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                  </button>
+                </div>
+                <div class="modal-body">
+                  <form id="ubahPengguna_${v.id}"  enctype="multipart/form-data">
+                    <div class="form-group">
+                      <label for="nama_lengkap">Nama Lengkap <small class="text-danger"> *Tidak boleh kosong</small> </label>
+                      <input type="text" class="form-control" id="nama_lengkap_${v.id}" value="${v.nama_lengkap}" name="nama_lengkap" required />
+                    </div>
+                    <div class="form-group">
+                      <label for="Username">Username <small class="text-danger"> *Tidak boleh kosong</small></label>
+                      <input type="text" class="form-control" id="username_${v.id}" value="${v.username}" name="username" required />
+                    </div>
+                    <div class="row">
+                      <div class="col-sm-6">
+                        <div class="form-group">
+                          <label for="password">Password </label>
+                          <input type="password" id="password_${v.id}" class="form-control" placeholder="******" name="password"  />
+                        </div>
                       </div>
-                      <div class="modal-body">
-                      <form id="ubahPengguna_${v.id}"  enctype="multipart/form-data">
+                      <div class="col-sm-6">
                         <div class="form-group">
-                          <label for="nama_lengkap">Nama Lengkap <small class="text-danger"> *Tidak boleh kosong</small> </label>
-                          <input type="text" class="form-control" id="nama_lengkap" value="${v.nama_lengkap}" name="nama_lengkap" required />
+                          <label for="re_password">Ulangi Password </label>
+                          <input type="password" class="form-control" id="re_password_${v.id}" placeholder="******" name="re_password" />
                         </div>
-                        <div class="form-group">
-                          <label for="Username">Username <small class="text-danger"> *Tidak boleh kosong</small></label>
-                          <input type="text" class="form-control" id="username" value="${v.username}" name="username" required />
-                        </div>
-                        <div class="row">
-                          <div class="col-sm-6">
-                            <div class="form-group">
-                              <label for="password">Password </label>
-                              <input type="password" id="password" class="form-control" placeholder="******" name="password"  />
-                            </div>
-                          </div>
-                          <div class="col-sm-6">
-                            <div class="form-group">
-                              <label for="re_password">Ulangi Password </label>
-                              <input type="password" class="form-control" id="re_password" placeholder="******" name="re_password" />
-                            </div>
-                          </div>
-                          <div class="col-sm-12">
-                          <small> Catatan. Abaikan kolom password jika tidak akan merubah password</small>
-                          </div>
-                        </div>
-                        <div class="form-group mt-3">
-                          <label for="telpon">Nomor Telpon <small class="text-success"> *Optional</small></label>
-                          <input type="number" class="form-control" id="telpon" value="${v.telpon}" name="telpon" />
-                        </div>
-                        <div class="form-group">
-                          <label for="email">Email <small class="text-success"> *Optional</small></label>
-                          <input type="email" class="form-control" id="email" value="${v.alamat_email}" name="email" />
-                        </div>
-                        <div class="form-group">
-                          <label for="customFile">Upload Foto Pribadi <small class="text-success"> *Optional</small></label>
-                          <div class="custom-file">
-                            <input type="file" class="custom-file-input" id="customFile"  name="gambar"/>
-                            <label class="custom-file-label" for="customFile">Upload foto kamu disini...</label>
-                          </div>
-                        </div>
-                        </form>
                       </div>
-                      <div class="modal-footer float-right">
-                        <button type="button" class="btn btn-outline-secondary" data-dismiss="modal">Close</button>
-                        <button type="button" class="btn btn-primary" onclick="ubahPengguna(${v.id})">Ubah Pengguna</button>
+                      <div class="col-sm-12">
+                        <small> Catatan. Abaikan kolom password jika tidak akan merubah password</small>
                       </div>
                     </div>
-                  </div>
+                    <div class="form-group mt-3">
+                      <label for="telpon">Nomor Telpon <small class="text-success"> *Optional</small></label>
+                      <input type="number" class="form-control" id="telpon_${v.id}" value="${v.telpon}" name="telpon" />
+                    </div>
+                    <div class="form-group">
+                      <label for="email">Email <small class="text-success"> *Optional</small></label>
+                      <input type="email" class="form-control" id="email_${v.id}" value="${v.alamat_email}" name="email" />
+                    </div>
+                    <div class="form-group">
+                      <label for="customFile">Upload Foto Pribadi <small class="text-success"> *Optional</small></label>
+                      <div class="custom-file">
+                        <input type="file" class="custom-file-input" id="customFile_${v.id}" name="gambar" />
+                        <label class="custom-file-label" for="customFile_${v.id}">Upload foto kamu disini...</label>
+                      </div>
+                    </div>
+                  </form>
                 </div>
+                <div class="modal-footer float-right">
+                  <button type="button" class="btn btn-outline-secondary" data-dismiss="modal">Close</button>
+                  <button type="button" class="btn btn-primary" onclick="ubahPengguna(${v.id})">Ubah Pengguna</button>
+                </div>
+              </div>
+            </div>
+          </div>
+          
               `;
         });
         $("#loadModalDelete").append(modal_delete);
@@ -285,48 +286,20 @@ function tambahPengguna() {
 }
 
 function ubahPengguna(id) {
-  var formData = new FormData($("#ubahPengguna_" + id)[0]);
+  $("#modalTitle").text("Ubah Pengguna");
 
-  console.log("Data yang dikirimkan:", formData);
-  console.log("Apakah formulir kosong:", formData.has("nama_lengkap"));
+  var user = getUserById(id);
 
-  $.ajax({
-    url: baseUrl + "users/" + id,
-    method: "PUT",
-    data: formData,
-    success: function (response) {
-      console.log("Perubahan berhasil Diubah:", response);
+  $("#userId").val(user.id);
+  $("#nama_lengkap").val(user.nama_lengkap);
+  $("#username").val(user.username);
+  $("#password").val("");
+  $("#re_password").val("");
+  $("#telpon").val(user.telpon);
+  $("#email").val(user.email);
 
-      users();
-      $("#modalPengguna_" + id).modal("hide");
-
-      if (response && response.status === 200) {
-        Swal.fire({
-          icon: "success",
-          title: "Sukses",
-          text: response.data.messages,
-          toast: true,
-          position: "top-end",
-          showConfirmButton: false,
-          timer: 3000,
-        });
-      } else {
-        Swal.fire({
-          icon: "error",
-          title: "Oops...",
-          text: response.data.messages,
-        });
-      }
-    },
-    error: function (error) {
-      console.error("Terjadi kesalahan:", error.responseText);
-      Swal.fire({
-        icon: "error",
-        title: "Oops...",
-        text: response.data.messages,
-      });
-    },
-  });
+  // Tampilkan modal
+  $("#modalUbahPengguna").modal("show");
 }
 
 function transaksi() {
