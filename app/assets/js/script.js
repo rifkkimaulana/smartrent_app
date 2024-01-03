@@ -6,9 +6,10 @@ let result = 1; // Format Currency
 let kategori = "";
 
 // fetch kategori pada katalog
+
 function kategori_view() {
   $.ajax({
-    url: "http://localhost:8080/api/kategori",
+    url: "http://localhost:8080/kategori",
     method: "GET",
     dataType: "JSON",
     cache: false,
@@ -16,10 +17,7 @@ function kategori_view() {
       result = response.result;
       if (response.status) {
         $.each(response.data, function (i, kt) {
-          button = `
-          <button onclick="katalogByKategori(${kt.id});" class="btn btn-sm btn-primary mr-1"> ${kt.nama}
-          </button>`;
-
+          button = `<button onclick="katalogByKategori(${kt.id});" class="btn btn-sm btn-primary mr-1"> ${kt.nama}</button>`;
           $("#kategoriButton").append(button);
         });
 

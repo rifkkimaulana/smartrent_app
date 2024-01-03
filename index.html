@@ -13,6 +13,8 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@100;200;300;400;500;600;700;800;900&display=swap" rel="stylesheet" />
     <link rel="stylesheet" type="text/css" href="assets/fonts/css/fontawesome-all.min.css" />
     <link rel="apple-touch-icon" sizes="180x180" href="assets/app/icons/icon-192x192.png" />
+
+    <link rel="manifest" href="manifest.json" />
   </head>
 
   <body class="theme-light">
@@ -22,93 +24,17 @@
       <div class="header header-fixed header-logo-center header-auto-show">
         <a href="index.html" class="header-title"><div class="title">smartRent</div></a>
         <a href="#" data-back-button class="header-icon header-icon-1"><i class="fas fa-chevron-left"></i></a>
-        <a href="#" data-menu="menu-main" class="header-icon header-icon-4"><i class="fas fa-bars"></i></a>
-        <a href="#" data-toggle-theme class="header-icon header-icon-3 show-on-theme-dark"><i class="fas fa-sun"></i></a>
-        <a href="#" data-toggle-theme class="header-icon header-icon-3 show-on-theme-light"><i class="fas fa-moon"></i></a>
       </div>
 
       <div class="page-title page-title-fixed">
         <h1><div class="title">smartRent</div></h1>
-        <a href="#" class="page-title-icon shadow-xl bg-theme color-theme" data-menu="menu-share"><i class="fa fa-share-alt"></i></a>
-        <a href="#" class="page-title-icon shadow-xl bg-theme color-theme show-on-theme-light" data-toggle-theme
-          ><i class="fa fa-moon"></i
-        ></a>
-        <a href="#" class="page-title-icon shadow-xl bg-theme color-theme show-on-theme-dark" data-toggle-theme
-          ><i class="fa fa-lightbulb color-yellow-dark"></i
-        ></a>
-        <a href="#" class="page-title-icon shadow-xl bg-theme color-theme" data-menu="menu-main"><i class="fa fa-bars"></i></a>
       </div>
+
       <div class="page-title-clear"></div>
-      <div class="page-content">
+
+      <!-- Load Contoen on Javascript-->
+      <div class="page-content mt-n1">
         <div id="content"></div>
-      </div>
-
-      <!-- menu cart -->
-      <div id="menu-cart" class="menu menu-box-bottom rounded-m bg-theme" data-menu-height="420">
-        <div class="menu-title">
-          <p class="color-highlight">Customize your Order</p>
-          <h1 class="font-22 font-800">Customize Product</h1>
-          <a href="#" class="close-menu"><i class="fa fa-times-circle"></i></a>
-        </div>
-
-        <div class="content">
-          <div class="divider mt-n2"></div>
-
-          <div class="d-flex mb-4">
-            <div>
-              <img src="assets/images/pictures/17s.jpg" class="rounded-sm" width="80" />
-            </div>
-            <div class="w-100 ms-3 pt-1">
-              <h6 class="font-500 font-14 pb-2">Awesome headset with pinkish color and iPhone adapter</h6>
-              <h4>$49.99</h4>
-            </div>
-          </div>
-
-          <div class="divider"></div>
-
-          <div class="row mb-0">
-            <div class="col-4">
-              <div class="input-style has-borders no-icon input-style-always-active validate-field mb-4">
-                <input type="number" class="form-control validate-number" id="form412" placeholder="1" />
-                <label for="form412" class="color-highlight">Quantity</label>
-                <i class="fa fa-times disabled invalid color-red-dark"></i>
-                <i class="fa fa-check disabled valid color-green-dark"></i>
-                <em>(required)</em>
-              </div>
-            </div>
-            <div class="col-4">
-              <div class="input-style has-borders no-icon input-style-always-active mb-4">
-                <label for="form52" class="color-highlight">Storage</label>
-                <select id="form52">
-                  <option value="default" selected>64 GB</option>
-                  <option value="a">128 GB</option>
-                  <option value="b">256 GB</option>
-                  <option value="c">512 GB</option>
-                </select>
-                <span><i class="fa fa-chevron-down"></i></span>
-                <i class="fa fa-check disabled valid color-green-dark"></i>
-                <i class="fa fa-check disabled invalid color-red-dark"></i>
-                <em></em>
-              </div>
-            </div>
-            <div class="col-4">
-              <div class="input-style has-borders no-icon input-style-always-active mb-4">
-                <label for="form512" class="color-highlight">Storage</label>
-                <select id="form512">
-                  <option value="default" selected>Small</option>
-                  <option value="a">Medium</option>
-                  <option value="b">Large</option>
-                </select>
-                <span><i class="fa fa-chevron-down"></i></span>
-                <i class="fa fa-check disabled valid color-green-dark"></i>
-                <i class="fa fa-check disabled invalid color-red-dark"></i>
-                <em></em>
-              </div>
-            </div>
-          </div>
-
-          <a href="#" class="close-menu btn btn-full gradient-blue font-13 btn-m font-600 mt-3 rounded-s">Apply Changes</a>
-        </div>
       </div>
     </div>
 
@@ -124,5 +50,8 @@
     <script type="text/javascript" src="assets/scripts/bootstrap.min.js"></script>
     <script src="assets/scripts/smartRent.js"></script>
     <script src="assets/scripts/script.js"></script>
+
+    <!-- register pwa application install-->
+    <script src="assets/scripts/register_pwa.js"></script>
   </body>
 </html>
