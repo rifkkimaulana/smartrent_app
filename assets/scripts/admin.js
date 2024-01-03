@@ -72,99 +72,32 @@ function fetch_userData() {
     dataType: "JSON",
     success: function (response) {
       $("#loadModalDelete").html("");
-      $("#loadModalUbah").html("");
       if (response.status === 200) {
         let modal_delete = "";
-        let modal_ubah = "";
         $.each(response.data, function (i, v) {
           modal_delete += `
-                <!-- Modal Hapus Pengguna -->
-                <div class="modal fade" id="hapusPenggunaModal_${v.id}">
-                  <div class="modal-dialog">
-                    <div class="modal-content">
-                      <div class="modal-header">
-                        <h6 class="modal-title">Hapus Pengguna</h6>
-                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                          <span aria-hidden="true">&times;</span>
-                        </button>
-                      </div>
-                      <div class="modal-body">
-                        <p>Apakah anda yakin ingin menghapus pengguna <b>${v.nama_lengkap}</b> ini ?</p>
-                      </div>
-                      <div class="modal-footer float-right">
-                        <button type="button" class="btn btn-outline-secondary" data-dismiss="modal">Close</button>
-                        <button type="button" onclick="hapusPengguna(${v.id})" class="btn btn-danger">Hapus</button>
-                      </div>
-                    </div>
-                  </div>
-                </div>`;
-          modal_ubah += `
-          <!-- Form Pengguna -->
-          <div class="modal fade" id="modalPengguna_${v.id}">
+          <!-- Modal Hapus Pengguna -->
+          <div class="modal fade" id="hapusPenggunaModal_${v.id}">
             <div class="modal-dialog">
               <div class="modal-content">
                 <div class="modal-header">
-                  <h6 class="modal-title">Tambah Pengguna Baru</h6>
+                  <h6 class="modal-title">Hapus Pengguna</h6>
                   <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                   </button>
                 </div>
                 <div class="modal-body">
-                  <form id="ubahPengguna_${v.id}"  enctype="multipart/form-data">
-                    <div class="form-group">
-                      <label for="nama_lengkap">Nama Lengkap <small class="text-danger"> *Tidak boleh kosong</small> </label>
-                      <input type="text" class="form-control" id="nama_lengkap_${v.id}" value="${v.nama_lengkap}" name="nama_lengkap" required />
-                    </div>
-                    <div class="form-group">
-                      <label for="Username">Username <small class="text-danger"> *Tidak boleh kosong</small></label>
-                      <input type="text" class="form-control" id="username_${v.id}" value="${v.username}" name="username" required />
-                    </div>
-                    <div class="row">
-                      <div class="col-sm-6">
-                        <div class="form-group">
-                          <label for="password">Password </label>
-                          <input type="password" id="password_${v.id}" class="form-control" placeholder="******" name="password"  />
-                        </div>
-                      </div>
-                      <div class="col-sm-6">
-                        <div class="form-group">
-                          <label for="re_password">Ulangi Password </label>
-                          <input type="password" class="form-control" id="re_password_${v.id}" placeholder="******" name="re_password" />
-                        </div>
-                      </div>
-                      <div class="col-sm-12">
-                        <small> Catatan. Abaikan kolom password jika tidak akan merubah password</small>
-                      </div>
-                    </div>
-                    <div class="form-group mt-3">
-                      <label for="telpon">Nomor Telpon <small class="text-success"> *Optional</small></label>
-                      <input type="number" class="form-control" id="telpon_${v.id}" value="${v.telpon}" name="telpon" />
-                    </div>
-                    <div class="form-group">
-                      <label for="email">Email <small class="text-success"> *Optional</small></label>
-                      <input type="email" class="form-control" id="email_${v.id}" value="${v.alamat_email}" name="email" />
-                    </div>
-                    <div class="form-group">
-                      <label for="customFile">Upload Foto Pribadi <small class="text-success"> *Optional</small></label>
-                      <div class="custom-file">
-                        <input type="file" class="custom-file-input" id="customFile_${v.id}" name="gambar" />
-                        <label class="custom-file-label" for="customFile_${v.id}">Upload foto kamu disini...</label>
-                      </div>
-                    </div>
-                  </form>
+                  <p>Apakah anda yakin ingin menghapus pengguna <b>${v.nama_lengkap}</b> ini ?</p>
                 </div>
                 <div class="modal-footer float-right">
                   <button type="button" class="btn btn-outline-secondary" data-dismiss="modal">Close</button>
-                  <button type="button" class="btn btn-primary" onclick="ubahPengguna(${v.id})">Ubah Pengguna</button>
+                  <button type="button" onclick="hapusPengguna(${v.id})" class="btn btn-danger">Hapus</button>
                 </div>
               </div>
             </div>
-          </div>
-          
-              `;
+          </div>`;
         });
         $("#loadModalDelete").append(modal_delete);
-        $("#loadModalUbah").append(modal_ubah);
       }
     },
     error: function (xhr, status, error) {
@@ -193,7 +126,7 @@ function fetch_userData() {
         render: function (data, type, v) {
           return `
           <div class="text-center">
-          <a role="button" data-toggle="modal" data-target="#modalPengguna_${v.id}" class="btn btn-sm btn-info"><i class="fas fa-edit"></i></a>
+          <a role="button" onclick="formEditPengguna(${v.id})" class="btn btn-sm btn-info"><i class="fas fa-edit"></i></a>
           <a role="button" data-toggle="modal" data-target="#hapusPenggunaModal_${v.id}" class="btn btn-sm btn-danger"><i class="fas fa-trash"></i></a>
           </div>
         `;
@@ -202,6 +135,103 @@ function fetch_userData() {
       },
     ],
   });
+}
+
+// Pengiriman insert/delete pengguna
+function submitPengguna() {
+  var form = document.getElementById("formPengguna");
+  var formData = new FormData(form);
+
+  // cek userid dalam form
+  var isTambah = !formData.get("userId");
+
+  // URL endpoint REST API untuk tambah atau ubah
+  var apiUrl = isTambah ? baseUrl + "users/" : baseUrl + "users/" + formData.get("userId");
+
+  $.ajax({
+    type: isTambah ? "POST" : "PUT",
+    url: apiUrl,
+    data: formData,
+    processData: false,
+    contentType: false,
+    success: function (response) {
+      console.log(response);
+
+      $("#modalPengguna").modal("hide");
+      // Load page
+
+      if (response && (response.status === 200 || response.status === 201)) {
+        Swal.fire({
+          icon: "success",
+          title: "Sukses",
+          text: response.data ? response.data.messages : "Operasi berhasil",
+          toast: true,
+          position: "top-end",
+          showConfirmButton: false,
+          timer: 3000,
+        });
+      } else {
+        Swal.fire({
+          icon: "error",
+          title: "Oops...",
+          text: response.data ? response.data.messages : "Terjadi kesalahan",
+        });
+      }
+
+      users();
+    },
+    error: function (error) {
+      console.log(error);
+      Swal.fire({
+        icon: "error",
+        title: "Oops...",
+        text: response.data.messages,
+      });
+    },
+  });
+}
+
+// Fungsi untuk menampilkan data pengguna yang akan diubah
+function formEditPengguna(id) {
+  $.ajax({
+    type: "GET",
+    url: baseUrl + "users/" + id,
+
+    success: function (response) {
+      console.log(id);
+
+      // convert object data
+      var user = response.data[0];
+      $("#userId").val(user.id);
+      $("#nama_lengkap").val(user.nama_lengkap);
+      $("#username").val(user.username);
+      $("#telpon").val(user.telpon);
+      $("#email").val(user.alamat_email);
+
+      $("#modalPengguna").modal("show");
+    },
+    error: function (error) {
+      console.error("Terjadi kesalahan:", error.messages);
+      Swal.fire({
+        icon: "error",
+        title: "Oops...",
+        text: error.responseJSON.message,
+      });
+    },
+  });
+}
+
+// Fungsi untuk menangani tombol "Simpan" di modal
+function tambahPengguna() {
+  // Ambil nilai userId dari formulir
+  var userId = $("#userId").val();
+
+  // Jika userId kosong, ini operasi tambah. Jika tidak, ini operasi ubah.
+  if (!userId) {
+    submitPengguna(); // Operasi tambah
+  } else {
+    submitPengguna(); // Operasi ubah
+  }
 }
 
 function hapusPengguna(id) {
@@ -218,7 +248,7 @@ function hapusPengguna(id) {
         Swal.fire({
           icon: "success",
           title: "Sukses",
-          text: "Data user berhasil dihapus.",
+          text: "Pengguna berhasil dihapus",
           toast: true,
           position: "top-end",
           showConfirmButton: false,
@@ -228,21 +258,21 @@ function hapusPengguna(id) {
         Swal.fire({
           icon: "error",
           title: "Oops...",
-          text: "Terjadi kesalahan saat menghapus data user.",
+          text: "Terjadi kesalahan saat menghapus pengguna",
         });
       }
     },
     error: function (error) {
-      console.error("Terjadi kesalahan:", error.messages);
+      console.error("Terjadi kesalahan:", error.responseJSON.message);
       Swal.fire({
         icon: "error",
         title: "Oops...",
-        text: "Terjadi kesalahan saat menghapus data user.",
+        text: "Terjadi kesalahan saat menghapus pengguna",
       });
     },
   });
 }
-
+/*
 function tambahPengguna() {
   $.ajax({
     url: baseUrl + "users",
@@ -284,22 +314,38 @@ function tambahPengguna() {
     },
   });
 }
+*/
 
-function ubahPengguna(id) {
-  $("#modalTitle").text("Ubah Pengguna");
-
-  var user = getUserById(id);
-
-  $("#userId").val(user.id);
-  $("#nama_lengkap").val(user.nama_lengkap);
-  $("#username").val(user.username);
-  $("#password").val("");
-  $("#re_password").val("");
-  $("#telpon").val(user.telpon);
-  $("#email").val(user.email);
-
-  // Tampilkan modal
-  $("#modalUbahPengguna").modal("show");
+function riwayat() {
+  $.ajax({
+    url: "../admin/pages/riwayat.html",
+    method: "GET",
+    success: function (data) {
+      //open_preload();
+      $("#content").html(data);
+      setTitle("Riwayat Pengguna");
+      // datatabel ajax
+      $("#tablerifkkimaulana").DataTable({
+        ajax: {
+          url: baseUrl + "riwayat",
+          type: "GET",
+          dataSrc: "data",
+        },
+        columns: [
+          {
+            data: null,
+            render: function (data, type, row, no) {
+              return no.row + 1;
+            },
+            className: "text-center",
+          },
+          { data: "user_id" },
+          { data: "aktivitas" },
+          { data: "created_at", className: "text-center" },
+        ],
+      });
+    },
+  });
 }
 
 function transaksi() {
@@ -310,6 +356,42 @@ function transaksi() {
       open_preload();
       $("#content").html(data);
       setTitle("Transaksi");
+
+      $("#tablerifkkimaulana").DataTable({
+        ajax: {
+          url: baseUrl + "transaksi",
+          type: "GET",
+          dataSrc: "data",
+        },
+        columns: [
+          {
+            data: null,
+            render: function (data, type, row, no) {
+              return no.row + 1;
+            },
+            className: "text-center",
+          },
+          { data: "no_transaksi" },
+          { data: "user_id" },
+          { data: "tanggal_penyewaan" },
+          { data: "tanggal_pengembalian" },
+          { data: "total_harga" },
+          { data: "status_transaksi" },
+          { data: "created_at" },
+          {
+            data: null,
+            render: function (data, type, v) {
+              return `
+              <div class="text-center">
+              <a role="button" onclick="tambahTransaksi(${v.id})" class="btn btn-sm btn-info"><i class="fas fa-edit"></i></a>
+              <a role="button" data-toggle="modal" data-target="#hapusTransaksi${v.id}" class="btn btn-sm btn-danger"><i class="fas fa-trash"></i></a>
+              </div>
+            `;
+            },
+            className: "text-center",
+          },
+        ],
+      });
     },
   });
 }
@@ -322,121 +404,472 @@ function pembayaran() {
       open_preload();
       $("#content").html(data);
       setTitle("Pembayaran");
+      /*
+ <th class="text-center">No</th>
+                <th>Reference</th>
+                <th>No Transaksi</th>
+                <th>Customer</th>
+                <th>Channel</th>
+                <th>Pembayaran</th>
+                <th>Status</th>
+                <th>Aksi</th>*/
+      // data table ajax
+
+      $("#tablerifkkimaulana").DataTable({
+        ajax: {
+          url: baseUrl + "pembayaran",
+          type: "GET",
+          dataSrc: "data",
+        },
+        columns: [
+          {
+            data: null,
+            render: function (data, type, row, no) {
+              return no.row + 1;
+            },
+            className: "text-center",
+          },
+          { data: "reference" },
+          { data: "no_transaksi" },
+          { data: "user_id" },
+          { data: "channel" },
+          { data: "pembayaran" },
+          { data: "status" },
+          {
+            data: null,
+            render: function (data, type, v) {
+              return `
+              <div class="text-center">
+              <a role="button" onclick="tambahDestinasi(${v.id})" class="btn btn-sm btn-info"><i class="fas fa-edit"></i></a>
+              <a role="button" data-toggle="modal" data-target="#hapusDestinasi${v.id}" class="btn btn-sm btn-danger"><i class="fas fa-trash"></i></a>
+              </div>
+            `;
+            },
+            className: "text-center",
+          },
+        ],
+      });
     },
   });
 }
 
 function inventaris() {
   $.ajax({
-    url: "../admin/pages/inventaris.html",
+    url: "../admin/pages/inventaris/daftar_inventaris.html",
     method: "GET",
     success: function (data) {
       open_preload();
       $("#content").html(data);
       setTitle("Investari");
+
+      /*
+       <tr>
+                <th class="text-center">#</th>
+                <th>Nama Barang</th>
+                <th>Kategori</th>
+                <th>Harga Sewa</th>
+                <th>Status</th>
+                <th>Satuan Sewa</th>
+                <th>Aksi</th>
+              </tr>
+              */
+
+      $("#tablerifkkimaulana").DataTable({
+        ajax: {
+          url: baseUrl + "inventaris",
+          type: "GET",
+          dataSrc: "data",
+        },
+        columns: [
+          {
+            data: null,
+            render: function (data, type, row, no) {
+              return no.row + 1;
+            },
+            className: "text-center",
+          },
+          { data: "nama_barang" },
+          { data: "kategori_id" },
+          { data: "harga_sewa" },
+          { data: "status" },
+          { data: "durasi_sewa" },
+          {
+            data: null,
+            render: function (data, type, v) {
+              return `
+                      <div class="text-center">
+                      <a role="button" onclick="tambahDestinasi(${v.id})" class="btn btn-sm btn-info"><i class="fas fa-edit"></i></a>
+                      <a role="button" data-toggle="modal" data-target="#hapusDestinasi${v.id}" class="btn btn-sm btn-danger"><i class="fas fa-trash"></i></a>
+                      </div>
+                    `;
+            },
+            className: "text-center",
+          },
+        ],
+      });
     },
   });
 }
 
 function kategori_inventaris() {
   $.ajax({
-    url: "../admin/pages/kategori_inventaris.html",
+    url: "../admin/pages/inventaris/kategori_inventaris.html",
     method: "GET",
     success: function (data) {
       open_preload();
       $("#content").html(data);
       setTitle("Kategori Inventaris");
+
+      /*
+       <tr>
+                <th class="text-center">#</th>
+                <th>Nama Kategori</th>
+                <th>Dibuat</th>
+              </tr>*/
+      // datatable ajax
+      $("#tablerifkkimaulana").DataTable({
+        ajax: {
+          url: baseUrl + "kategori",
+          type: "GET",
+          dataSrc: "data",
+        },
+        columns: [
+          {
+            data: null,
+            render: function (data, type, row, no) {
+              return no.row + 1;
+            },
+            className: "text-center",
+          },
+          { data: "nama_kategori" },
+          {
+            data: null,
+            render: function (data, type, v) {
+              return `
+              <div class="text-center">
+              <a role="button" onclick="ubahKategori(${v.id})" class="btn btn-sm btn-info"><i class="fas fa-edit"></i></a>
+              <a role="button" data-toggle="modal" data-target="#hapusKategori${v.id}" class="btn btn-sm btn-danger"><i class="fas fa-trash"></i></a>
+              </div>
+            `;
+            },
+            className: "text-center",
+          },
+        ],
+      });
     },
   });
 }
 
 function destinasi() {
   $.ajax({
-    url: "../admin/pages/destinasi.html",
+    url: "../admin/pages/perjalanan/destinasi.html",
     method: "GET",
     success: function (data) {
       open_preload();
       $("#content").html(data);
       setTitle("Dashboard");
+
+      /*
+    <th>Nama Destinasi</th>
+    <th>Lokasi</th>
+    <th>Dibuat</th>
+    */
+
+      $("#tablerifkkimaulana").DataTable({
+        ajax: {
+          url: baseUrl + "destinasi",
+          type: "GET",
+          dataSrc: "data",
+        },
+        columns: [
+          {
+            data: null,
+            render: function (data, type, row, no) {
+              return no.row + 1;
+            },
+            className: "text-center",
+          },
+          { data: "nama_destinasi" },
+          { data: "lokasi" },
+          { data: "created_at" },
+          {
+            data: null,
+            render: function (data, type, v) {
+              return `
+              <div class="text-center">
+              <a role="button" onclick="tambahDestinasi(${v.id})" class="btn btn-sm btn-info"><i class="fas fa-edit"></i></a>
+              <a role="button" data-toggle="modal" data-target="#hapusDestinasi${v.id}" class="btn btn-sm btn-danger"><i class="fas fa-trash"></i></a>
+              </div>
+            `;
+            },
+            className: "text-center",
+          },
+        ],
+      });
     },
   });
 }
 
 function paket_perjalanan() {
   $.ajax({
-    url: "../admin/pages/paket_perjalanan.html",
+    url: "../admin/pages/perjalanan/paket.html",
     method: "GET",
     success: function (data) {
       open_preload();
       $("#content").html(data);
       setTitle("Paket Perjalanan");
+
+      /*
+      <th class="text-center">No</th>
+      <th>Nama Paket</th>
+      <th>Kuota</th>
+      <th>Harga</th>
+      <th>Kategori</th>
+      <th>Aksi</th>
+
+      id	kategori_id	nama_paket	deskripsi	harga_paket	kuota_peserta	gambar_paket	created_at
+
+      */
+      $("#tablerifkkimaulana").DataTable({
+        ajax: {
+          url: baseUrl + "paket_perjalanan",
+          type: "GET",
+          dataSrc: "data",
+        },
+        columns: [
+          {
+            data: null,
+            render: function (data, type, row, no) {
+              return no.row + 1;
+            },
+            className: "text-center",
+          },
+          { data: "nama_paket" },
+          { data: "kuota_peserta" },
+          { data: "harga_paket" },
+          { data: "kategori_id" },
+
+          {
+            data: null,
+            render: function (data, type, v) {
+              return `
+              <div class="text-center">
+              <a role="button" onclick="tambahDestinasi(${v.id})" class="btn btn-sm btn-info"><i class="fas fa-edit"></i></a>
+              <a role="button" data-toggle="modal" data-target="#hapusDestinasi${v.id}" class="btn btn-sm btn-danger"><i class="fas fa-trash"></i></a>
+              </div>
+            `;
+            },
+            className: "text-center",
+          },
+        ],
+      });
     },
   });
 }
 
 function kategori_perjalanan() {
   $.ajax({
-    url: "../admin/pages/kategori_perjalanan.html",
+    url: "../admin/pages/perjalanan/kategori.html",
     method: "GET",
     success: function (data) {
       open_preload();
       $("#content").html(data);
       setTitle("Kategori Perjalanan");
+      /*
+            <th class="text-center">No</th>
+            <th>Nama Kategori</th>
+            <th>Aksi</th>
+          */
+      $("#tablerifkkimaulana").DataTable({
+        ajax: {
+          url: baseUrl + "kategori_perjalanan",
+          type: "GET",
+          dataSrc: "data",
+        },
+        columns: [
+          {
+            data: null,
+            render: function (data, type, row, no) {
+              return no.row + 1;
+            },
+            className: "text-center",
+          },
+          { data: "nama_kategori" },
+
+          {
+            data: null,
+            render: function (data, type, v) {
+              return `
+              <div class="text-center">
+              <a role="button" onclick="tambahDestinasi(${v.id})" class="btn btn-sm btn-info"><i class="fas fa-edit"></i></a>
+              <a role="button" data-toggle="modal" data-target="#hapusDestinasi${v.id}" class="btn btn-sm btn-danger"><i class="fas fa-trash"></i></a>
+              </div>
+            `;
+            },
+            className: "text-center",
+          },
+        ],
+      });
     },
   });
 }
 
 function pemesanan_perjalanan() {
   $.ajax({
-    url: "../admin/pages/pemesanan_perjalanan.html",
+    url: "../admin/pages/perjalanan/pemesanan.html",
     method: "GET",
     success: function (data) {
       open_preload();
       $("#content").html(data);
       setTitle("Pemesanan Perjalanan");
-    },
-  });
-}
 
-function apikey() {
-  $.ajax({
-    url: "../admin/pages/apikey.html",
-    method: "GET",
-    success: function (data) {
-      open_preload();
-      $("#content").html(data);
-      setTitle("Apikey Setting");
+      /*
+
+        <th class="text-center">#</th>
+        <th>Pemesan</th>
+        <th>Paket</th>
+        <th>Jumlah Peserta</th>
+        <th>Total Pembayaran</th>
+        <th>Status Pembayaran</th>
+        <th>Dibuat</th>
+        <th>Aksi</th>
+
+      id	no_transaksi	user_id	paket_id	jumlah_peserta	total_pembayaran	tanggal_pemesanan	status_pembayaran
+
+      */
+
+      $("#tablerifkkimaulana").DataTable({
+        ajax: {
+          url: baseUrl + "pemesanan_perjalanan",
+          type: "GET",
+          dataSrc: "data",
+        },
+        columns: [
+          {
+            data: null,
+            render: function (data, type, row, no) {
+              return no.row + 1;
+            },
+            className: "text-center",
+          },
+          { data: "user_id" },
+          { data: "paket_id" },
+          { data: "jumlah_peserta" },
+          { data: "total_pembayaran" },
+          { data: "status_pembayaran" },
+          { data: "tanggal_pemesanan" },
+
+          {
+            data: null,
+            render: function (data, type, v) {
+              return `
+              <div class="text-center">
+              <a role="button" onclick="tambahPesanan(${v.id})" class="btn btn-sm btn-info"><i class="fas fa-edit"></i></a>
+              <a role="button" data-toggle="modal" data-target="#hapusPesanan${v.id}" class="btn btn-sm btn-danger"><i class="fas fa-trash"></i></a>
+              </div>
+            `;
+            },
+            className: "text-center",
+          },
+        ],
+      });
     },
   });
 }
 
 function bank() {
   $.ajax({
-    url: "../admin/pages/bank.html",
+    url: "../admin/pages/pengaturan/bank.html",
     method: "GET",
     success: function (data) {
       open_preload();
       $("#content").html(data);
       setTitle("Bank Pengguna");
+
+      // datatables
+      $("#tablerifkkimaulana").DataTable({
+        ajax: {
+          url: baseUrl + "bank",
+          type: "GET",
+          dataSrc: "data",
+        },
+        columns: [
+          {
+            data: null,
+            render: function (data, type, row, no) {
+              return no.row + 1;
+            },
+            className: "text-center",
+          },
+          { data: "user_id" },
+          { data: "daftar_bank_id" },
+          { data: "nama_lengkap" },
+          { data: "nomor_rekening" },
+          {
+            data: null,
+            render: function (data, type, v) {
+              return `
+              <div class="text-center">
+              <a role="button" onclick="editBank(${v.id})" class="btn btn-sm btn-info"><i class="fas fa-edit"></i></a>
+              <a role="button" data-toggle="modal" data-target="#ubahBank${v.id}" class="btn btn-sm btn-danger"><i class="fas fa-trash"></i></a>
+              </div>
+            `;
+            },
+            className: "text-center",
+          },
+        ],
+      });
     },
   });
 }
 
 function daftar_bank() {
   $.ajax({
-    url: "../admin/pages/daftar_bank.html",
+    url: "../admin/pages/pengaturan/daftar_bank.html",
     method: "GET",
     success: function (data) {
       open_preload();
       $("#content").html(data);
       setTitle("Manajemen Bank");
+
+      // datatables
+      $("#tablerifkkimaulana").DataTable({
+        ajax: {
+          url: baseUrl + "daftar_bank",
+          type: "GET",
+          dataSrc: "data",
+        },
+        columns: [
+          {
+            data: null,
+            render: function (data, type, row, no) {
+              return no.row + 1;
+            },
+            className: "text-center",
+          },
+          { data: "logo_bank" },
+          { data: "nama_bank" },
+          {
+            data: null,
+            render: function (data, type, v) {
+              return `
+              <div class="text-center">
+              <a role="button" onclick="editBank(${v.id})" class="btn btn-sm btn-info"><i class="fas fa-edit"></i></a>
+              <a role="button" data-toggle="modal" data-target="#ubahBank${v.id}" class="btn btn-sm btn-danger"><i class="fas fa-trash"></i></a>
+              </div>
+            `;
+            },
+            className: "text-center",
+          },
+        ],
+      });
     },
   });
 }
 
 function duitku_payment() {
   $.ajax({
-    url: "../admin/pages/duitku_payment.html",
+    url: "../admin/pages/pengaturan/duitku.html",
     method: "GET",
     success: function (data) {
       open_preload();
@@ -448,7 +881,7 @@ function duitku_payment() {
 
 function whatsapp_gateway() {
   $.ajax({
-    url: "../admin/pages/whatsapp_gateway.html",
+    url: "../admin/pages/pengaturan/wablas.html",
     method: "GET",
     success: function (data) {
       open_preload();
