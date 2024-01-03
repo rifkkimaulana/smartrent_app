@@ -293,8 +293,6 @@ function ubahPengguna(id) {
   $.ajax({
     url: baseUrl + "users/" + id,
     method: "PUT",
-    contentType: false,
-    processData: false,
     data: formData,
     success: function (response) {
       console.log("Perubahan berhasil Diubah:", response);
