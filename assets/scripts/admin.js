@@ -1,12 +1,10 @@
 $(document).ready(function () {
-  // Panggil fungsi-fungsi lain setelah halaman dimuat
   navbar();
   header();
   footer();
-  users();
+  dashboard();
 });
 
-// Variabel baseUrl
 var baseUrl = "http://localhost:8080/api/";
 
 // Layout
@@ -19,7 +17,6 @@ function navbar() {
     },
   });
 }
-
 function header() {
   $.ajax({
     url: "../admin/layout/header.html",
@@ -57,141 +54,80 @@ function users() {
     url: "../admin/pages/users.html",
     method: "GET",
     success: function (data) {
-      //open_preload();
+      open_preload();
       $("#content").html(data);
-      fetch_userData();
       setTitle("Manajement User");
-    },
-  });
-}
 
-function fetch_userData() {
-  $.ajax({
-    method: "GET",
-    url: baseUrl + "users/",
-    dataType: "JSON",
-    success: function (response) {
-      $("#loadModalDelete").html("");
-      if (response.status === 200) {
-        let modal_delete = "";
-        $.each(response.data, function (i, v) {
-          modal_delete += `
-          <!-- Modal Hapus Pengguna -->
-          <div class="modal fade" id="hapusPenggunaModal_${v.id}">
-            <div class="modal-dialog">
-              <div class="modal-content">
-                <div class="modal-header">
-                  <h6 class="modal-title">Hapus Pengguna</h6>
-                  <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                  </button>
-                </div>
-                <div class="modal-body">
-                  <p>Apakah anda yakin ingin menghapus pengguna <b>${v.nama_lengkap}</b> ini ?</p>
-                </div>
-                <div class="modal-footer float-right">
-                  <button type="button" class="btn btn-outline-secondary" data-dismiss="modal">Close</button>
-                  <button type="button" onclick="hapusPengguna(${v.id})" class="btn btn-danger">Hapus</button>
-                </div>
-              </div>
-            </div>
-          </div>`;
-        });
-        $("#loadModalDelete").append(modal_delete);
-      }
-    },
-    error: function (xhr, status, error) {
-      console.error("Error fetching data:", error);
-    },
-  });
-  $("#tablerifkkimaulana").DataTable({
-    ajax: {
-      url: baseUrl + "users",
-      type: "GET",
-      dataSrc: "data",
-    },
-    columns: [
-      {
-        data: null,
-        render: function (data, type, row, no) {
-          return no.row + 1;
+      $("#tablerifkkimaulana").DataTable({
+        ajax: {
+          url: baseUrl + "users",
+          type: "GET",
+          dataSrc: "data",
         },
-        className: "text-center",
-      },
-      { data: "nama_lengkap" },
-      { data: "username" },
-      { data: "level_user" },
-      {
-        data: null,
-        render: function (data, type, v) {
-          return `
-          <div class="text-center">
-          <a role="button" onclick="formEditPengguna(${v.id})" class="btn btn-sm btn-info"><i class="fas fa-edit"></i></a>
-          <a role="button" data-toggle="modal" data-target="#hapusPenggunaModal_${v.id}" class="btn btn-sm btn-danger"><i class="fas fa-trash"></i></a>
-          </div>
-        `;
-        },
-        className: "text-center",
-      },
-    ],
-  });
-}
+        columns: [
+          {
+            data: null,
+            render: function (data, type, row, no) {
+              return no.row + 1;
+            },
+            className: "text-center",
+          },
+          {
+            data: null,
+            render: function (data, type, v) {
+              // Check if v.gambar is available and not empty
+              if (v.gambar && v.gambar.trim() !== "") {
+                return `
+                  <div class="text-center">
+                    <img src="${v.gambar}" alt="" style="max-width: 50px; max-height: 50px;">
+                  </div>
+                `;
+              } else {
+                return "No Image";
+              }
+            },
+            className: "text-center",
+          },
+          { data: "nama_lengkap" },
+          { data: "username" },
+          { data: "level_user" },
+          {
+            data: null,
+            render: function (data, type, v) {
+              var deleteButton = "";
 
-// Pengiriman insert/delete pengguna
-function submitPengguna() {
-  var form = document.getElementById("formPengguna");
-  var formData = new FormData(form);
+              // Assuming you have a 'level_user' property indicating the user's role
+              if (v.level_user !== "admin") {
+                deleteButton = `
+                  <a role="button" onclick="formHapusPengguna(${v.id})" class="btn btn-sm btn-danger">
+                    <i class="fas fa-trash"></i>
+                  </a>`;
+              }
 
-  // cek userid dalam form
-  var isTambah = !formData.get("userId");
-
-  // URL endpoint REST API untuk tambah atau ubah
-  var apiUrl = isTambah ? baseUrl + "users/" : baseUrl + "users/" + formData.get("userId");
-
-  $.ajax({
-    type: isTambah ? "POST" : "PUT",
-    url: apiUrl,
-    data: formData,
-    processData: false,
-    contentType: false,
-    success: function (response) {
-      console.log(response);
-
-      $("#modalPengguna").modal("hide");
-      // Load page
-
-      if (response && (response.status === 200 || response.status === 201)) {
-        Swal.fire({
-          icon: "success",
-          title: "Sukses",
-          text: response.data ? response.data.messages : "Operasi berhasil",
-          toast: true,
-          position: "top-end",
-          showConfirmButton: false,
-          timer: 3000,
-        });
-      } else {
-        Swal.fire({
-          icon: "error",
-          title: "Oops...",
-          text: response.data ? response.data.messages : "Terjadi kesalahan",
-        });
-      }
-
-      users();
-    },
-    error: function (error) {
-      console.log(error);
-      Swal.fire({
-        icon: "error",
-        title: "Oops...",
-        text: response.data.messages,
+              return `
+                <div class="text-center">
+                  <a role="button" onclick="formEditPengguna(${v.id})" class="btn btn-sm btn-info">
+                    <i class="fas fa-edit"></i>
+                  </a>
+                  ${deleteButton}
+                </div>`;
+            },
+            className: "text-center",
+          },
+        ],
       });
     },
   });
 }
 
-// Fungsi untuk menampilkan data pengguna yang akan diubah
+function tambahModal() {
+  $("#id").val("");
+  $("#nama_lengkap").val("");
+  $("#username").val("");
+  $("#telpon").val("");
+  $("#email").val("");
+  $("#modalPengguna").modal("show");
+}
 function formEditPengguna(id) {
   $.ajax({
     type: "GET",
@@ -200,9 +136,8 @@ function formEditPengguna(id) {
     success: function (response) {
       console.log(id);
 
-      // convert object data
       var user = response.data[0];
-      $("#userId").val(user.id);
+      $("#id").val(user.id);
       $("#nama_lengkap").val(user.nama_lengkap);
       $("#username").val(user.username);
       $("#telpon").val(user.telpon);
@@ -211,7 +146,6 @@ function formEditPengguna(id) {
       $("#modalPengguna").modal("show");
     },
     error: function (error) {
-      console.error("Terjadi kesalahan:", error.messages);
       Swal.fire({
         icon: "error",
         title: "Oops...",
@@ -221,29 +155,80 @@ function formEditPengguna(id) {
   });
 }
 
-// Fungsi untuk menangani tombol "Simpan" di modal
-function tambahPengguna() {
-  // Ambil nilai userId dari formulir
-  var userId = $("#userId").val();
+function formHapusPengguna(id) {
+  $.ajax({
+    type: "GET",
+    url: baseUrl + "users/" + id,
 
-  // Jika userId kosong, ini operasi tambah. Jika tidak, ini operasi ubah.
-  if (!userId) {
-    submitPengguna(); // Operasi tambah
-  } else {
-    submitPengguna(); // Operasi ubah
-  }
+    success: function (response) {
+      var user = response.data[0];
+      $("#hapusButton").attr("data-id", user.id);
+      $("#nama_hapus").text(user.nama_lengkap);
+
+      $("#hapusPenggunaModal").modal("show");
+    },
+    error: function (error) {
+      Swal.fire({
+        icon: "error",
+        title: "Oops...",
+        text: error.responseJSON.message,
+      });
+    },
+  });
 }
 
-function hapusPengguna(id) {
+function submitPengguna() {
+  var form = document.getElementById("formPengguna");
+  var formData = new FormData(form);
+
   $.ajax({
-    url: baseUrl + "users/" + id,
-    method: "DELETE",
+    type: "POST",
+    url: baseUrl + "users/",
+    data: formData,
+    processData: false,
+    contentType: false,
     success: function (response) {
-      console.log("Perubahan berhasil dihapus:", response);
+      if (response && (response.status === 200 || response.status === 201)) {
+        Swal.fire({
+          icon: "success",
+          title: "Sukses",
+          text: "Pengguna berhasil ditambah.",
+          toast: true,
+          position: "top-end",
+          showConfirmButton: false,
+          timer: 3000,
+        });
+      } else {
+        Swal.fire({
+          icon: "error",
+          title: "Oops...",
+          text: response.data.messages,
+        });
+      }
+
+      $("#modalPengguna").modal("hide");
+      $(".modal-backdrop").remove();
 
       users();
-      $("#hapusPenggunaModal_" + id).modal("hide");
+    },
+    error: function (error) {
+      Swal.fire({
+        icon: "error",
+        title: "Oops...",
+        text: error.responseJSON.message,
+      });
+      $("#modalPengguna").modal("hide");
+      $(".modal-backdrop").remove();
+    },
+  });
+}
 
+function hapusPengguna() {
+  $.ajax({
+    url: baseUrl + "users/" + $("#hapusButton").attr("data-id"),
+    method: "DELETE",
+    success: function (response) {
+      users();
       if (response && response.status === 204) {
         Swal.fire({
           icon: "success",
@@ -258,63 +243,23 @@ function hapusPengguna(id) {
         Swal.fire({
           icon: "error",
           title: "Oops...",
-          text: "Terjadi kesalahan saat menghapus pengguna",
+          text: error.responseJSON.message,
         });
       }
+      $("#hapusPenggunaModal").modal("hide");
+      $(".modal-backdrop").remove();
     },
     error: function (error) {
-      console.error("Terjadi kesalahan:", error.responseJSON.message);
+      $("#hapusPenggunaModal").modal("hide");
+      $(".modal-backdrop").remove();
       Swal.fire({
         icon: "error",
         title: "Oops...",
-        text: "Terjadi kesalahan saat menghapus pengguna",
+        text: error.responseJSON.message,
       });
     },
   });
 }
-/*
-function tambahPengguna() {
-  $.ajax({
-    url: baseUrl + "users",
-    method: "POST",
-    contentType: false,
-    processData: false,
-    data: new FormData($("#tambahPengguna")[0]),
-    success: function (response) {
-      console.log("Perubahan berhasil disimpan:", response);
-
-      users();
-      $("#modalPengguna").modal("hide");
-
-      if (response && response.status === 201) {
-        Swal.fire({
-          icon: "success",
-          title: "Sukses",
-          text: response.data.messages,
-          toast: true,
-          position: "top-end",
-          showConfirmButton: false,
-          timer: 3000,
-        });
-      } else {
-        Swal.fire({
-          icon: "error",
-          title: "Oops...",
-          text: response.data.messages,
-        });
-      }
-    },
-    error: function (error) {
-      console.error("Terjadi kesalahan:", error.responseText);
-      Swal.fire({
-        icon: "error",
-        title: "Oops...",
-        text: response.data.messages,
-      });
-    },
-  });
-}
-*/
 
 function riwayat() {
   $.ajax({
