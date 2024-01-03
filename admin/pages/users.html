@@ -3,7 +3,7 @@
     <div class="card">
       <div class="card-header">
         <h3 class="card-title">Manajemen User</h3>
-        <button role="button" class="btn btn-success btn-sm float-right" data-toggle="modal" data-target="#modal-default">
+        <button role="button" class="btn btn-success btn-sm float-right" data-toggle="modal" data-target="#modalPengguna">
           <i class="fa fa-user-plus"></i> Tambah User
         </button>
       </div>
@@ -19,28 +19,7 @@
                 <th class="text-center">Action</th>
               </tr>
             </thead>
-            <tbody>
-              <tr>
-                <td class="text-center">1</td>
-                <td>John Doe</td>
-                <td>johndoe</td>
-                <td>Admin</td>
-                <td class="text-center">
-                  <a href="#" class="btn btn-sm btn-info"><i class="fas fa-edit"></i></a>
-                  <a href="#" class="btn btn-sm btn-danger"><i class="fas fa-trash"></i></a>
-                </td>
-              </tr>
-              <tr>
-                <td class="text-center">2</td>
-                <td>Jane Doe</td>
-                <td>janedoe</td>
-                <td>User</td>
-                <td class="text-center">
-                  <a href="#" class="btn btn-sm btn-info"><i class="fas fa-edit"></i></a>
-                  <a href="#" class="btn btn-sm btn-danger"><i class="fas fa-trash"></i></a>
-                </td>
-              </tr>
-            </tbody>
+            <tfoot></tfoot>
           </table>
         </div>
       </div>
@@ -48,7 +27,8 @@
   </div>
 </section>
 
-<div class="modal fade" id="modal-default">
+<!-- Form Pengguna -->
+<div class="modal fade" id="modalPengguna">
   <div class="modal-dialog">
     <div class="modal-content">
       <div class="modal-header">
@@ -58,52 +38,50 @@
         </button>
       </div>
       <div class="modal-body">
-        <div class="form-group">
-          <label for="nama_lengkap">Nama Lengkap <small class="text-danger"> *Tidak boleh kosong</small> </label>
-          <input type="text" class="form-control" id="nama_lengkap" name="nama_lengkap" required />
-        </div>
-        <div class="form-group">
-          <label for="Username">Username <small class="text-danger"> *Tidak boleh kosong</small></label>
-          <input type="text" class="form-control" id="username" name="username" required />
-        </div>
-        <div class="row">
-          <div class="col-sm-6">
-            <div class="form-group">
-              <label for="password">Password <small class="text-danger"> *Tidak boleh kosong</small></label>
-              <input type="text" id="password" class="form-control" name="password" required />
+        <form id="tambahPengguna" enctype="multipart/form-data">
+          <div class="form-group">
+            <label for="nama_lengkap">Nama Lengkap <small class="text-danger"> *Tidak boleh kosong</small> </label>
+            <input type="text" class="form-control" id="nama_lengkap" name="nama_lengkap" required />
+          </div>
+          <div class="form-group">
+            <label for="Username">Username <small class="text-danger"> *Tidak boleh kosong</small></label>
+            <input type="text" class="form-control" id="username" name="username" required />
+          </div>
+          <div class="row">
+            <div class="col-sm-6">
+              <div class="form-group">
+                <label for="password">Password <small class="text-danger"> *Tidak boleh kosong</small></label>
+                <input type="text" id="password" class="form-control" name="password" required />
+              </div>
+            </div>
+            <div class="col-sm-6">
+              <div class="form-group">
+                <label for="re_password">Ulangi Password <small class="text-danger"> *Tidak boleh kosong</small></label>
+                <input type="text" class="form-control" id="re_password" name="re_password" required />
+              </div>
             </div>
           </div>
-          <div class="col-sm-6">
-            <div class="form-group">
-              <label for="re-password">Ulangi Password <small class="text-danger"> *Tidak boleh kosong</small></label>
-              <input type="text" class="form-control" id="re-password" name="re-password" required />
+          <div class="form-group">
+            <label for="telpon">Nomor Telpon <small class="text-success"> *Optional</small></label>
+            <input type="number" class="form-control" id="telpon" name="telpon" />
+          </div>
+          <div class="form-group">
+            <label for="email">Email <small class="text-success"> *Optional</small></label>
+            <input type="text" class="form-control" id="email" name="email" />
+          </div>
+          <div class="form-group">
+            <label for="customFile">Upload Foto Pribadi <small class="text-success"> *Optional</small></label>
+            <div class="custom-file">
+              <input type="file" class="custom-file-input" id="customFile" name="gambar" />
+              <label class="custom-file-label" for="customFile">Upload foto kamu disini...</label>
             </div>
           </div>
-        </div>
-        <div class="form-group">
-          <label for="telpon">Nomor Telpon <small class="text-success"> *Optional</small></label>
-          <input type="number" class="form-control" id="telpon" name="telpon" />
-        </div>
-        <div class="form-group">
-          <label for="email">Email <small class="text-success"> *Optional</small></label>
-          <input type="email" class="form-control" id="email" name="email" />
-        </div>
-        <div class="form-group">
-          <label for="customFile">Upload Foto Pribadi <small class="text-success"> *Optional</small></label>
-          <div class="custom-file">
-            <input type="file" class="custom-file-input" id="customFile" />
-            <label class="custom-file-label" for="customFile">Upload foto kamu disini...</label>
-          </div>
-        </div>
+        </form>
       </div>
       <div class="modal-footer float-right">
         <button type="button" class="btn btn-outline-secondary" data-dismiss="modal">Close</button>
-        <button type="button" class="btn btn-primary">Simpan</button>
+        <button type="button" onclick="tambahPengguna()" class="btn btn-primary">Simpan</button>
       </div>
     </div>
   </div>
 </div>
-
-<script>
-  customstyle();
-</script>
