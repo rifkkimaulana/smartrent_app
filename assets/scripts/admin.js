@@ -495,6 +495,22 @@ function kategori_inventaris() {
             },
             className: "text-center",
           },
+          {
+            data: null,
+            render: function (data, type, v) {
+              // Check if v.gambar is available and not empty
+              if (v.gambar_kategori && v.gambar_kategori.trim() !== "") {
+                return `
+                  <div class="text-center">
+                    <img src="${v.gambar_kategori}" alt="" style="max-width: 50px; max-height: 50px;">
+                  </div>
+                `;
+              } else {
+                return "No Image";
+              }
+            },
+            className: "text-center",
+          },
           { data: "nama_kategori" },
           {
             data: null,
@@ -513,7 +529,6 @@ function kategori_inventaris() {
     },
   });
 }
-
 function tambahModalKategori() {
   $("#id").val("");
   $("#nama_kategori").val("");
@@ -527,9 +542,9 @@ function formEditKategori(id) {
     success: function (response) {
       console.log(id);
 
-      var user = response.data[0];
-      $("#id").val(user.id);
-      $("#nama_kategori").val(user.nama_lengkap);
+      var kt = response.data[0];
+      $("#id").val(kt.id);
+      $("#nama_kategori").val(kt.nama_kategori);
 
       $("#modalKategori").modal("show");
     },
@@ -549,7 +564,7 @@ function formHapusKategori(id) {
 
     success: function (response) {
       var kt = response.data[0];
-      $("#hapusButton").attr("data-id", kt.id);
+      $("#hapusButtonKategori").attr("data-id", kt.id);
       $("#nama_hapus").text(kt.nama_kategori);
 
       $("#modalHapusKategori").modal("show");
@@ -609,10 +624,9 @@ function submitKategori() {
     },
   });
 }
-
 function hapusKategori() {
   $.ajax({
-    url: baseUrl + "kategori/" + $("#hapusButton").attr("data-id"),
+    url: baseUrl + "kategori/" + $("#hapusButtonKategori").attr("data-id"),
     method: "DELETE",
     success: function (response) {
       if (response && response.status === 204) {
