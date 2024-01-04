@@ -1543,7 +1543,7 @@ function tambahModalPemesanan() {
   $("#user_id").val("");
   $("#paket_id").val("");
   $("#jumlah_peserta").val("");
-  $("#total_pemesanan").val("");
+  $("#total_pembayaran").val("");
   $("#status_pembayaran").val("");
 
   getUsersSelect();
@@ -1563,7 +1563,7 @@ function formEditPemesanan(id) {
       $("#user_id").val(kt.user_id);
       $("#paket_id").val(kt.paket_id);
       $("#jumlah_peserta").val(kt.jumlah_peserta);
-      $("#total_pemesanan").val(kt.total_pemesanan);
+      $("#total_pembayaran").val(kt.total_pembayaran);
       $("#status_pembayaran").val(kt.status_pembayaran);
 
       getUsersSelect();
