@@ -4,12 +4,12 @@
   "description": "platform yang menghadirkan konsep kehidupan yang lebih cerdas, menyenangkan, dan terintegrasi. ",
   "icons": [
     {
-      "src": "assets/logo/smartrent_transparan.png",
+      "src": "/assets/logo/smartrent_transparan.png",
       "sizes": "512x512",
       "type": "image/png"
     },
     {
-      "src": "assets/logo/smartrent250_transparan.png",
+      "src": "/assets/logo/smartren250_transparan.png",
       "sizes": "192x192",
       "type": "image/png"
     }

@@ -84,7 +84,6 @@ function users() {
           {
             data: null,
             render: function (data, type, v) {
-              // Check if v.gambar is available and not empty
               if (v.gambar && v.gambar.trim() !== "") {
                 return `
                   <div class="text-center">
@@ -651,7 +650,6 @@ function kategori_inventaris() {
           {
             data: null,
             render: function (data, type, v) {
-              // Check if v.gambar is available and not empty
               if (v.gambar_kategori && v.gambar_kategori.trim() !== "") {
                 return `
                   <div class="text-center">
@@ -659,7 +657,7 @@ function kategori_inventaris() {
                   </div>
                 `;
               } else {
-                return "No Image";
+                return "";
               }
             },
             className: "text-center",
@@ -1197,7 +1195,7 @@ function bank() {
             className: "text-center",
           },
           { data: "user_id", render: renderNamaLengkap },
-          { data: "nama_lengkap" },
+
           { data: "nomor_rekening" },
           { data: "daftar_bank_id", render: renderBank },
           {
@@ -1205,14 +1203,154 @@ function bank() {
             render: function (data, type, v) {
               return `
               <div class="text-center">
-              <a role="button" onclick="editBank(${v.id})" class="btn btn-sm btn-info"><i class="fas fa-edit"></i></a>
-              <a role="button" data-toggle="modal" data-target="#ubahBank${v.id}" class="btn btn-sm btn-danger"><i class="fas fa-trash"></i></a>
+              <a role="button" onclick="formEditBankPengguna(${v.id})" class="btn btn-sm btn-info"><i class="fas fa-edit"></i></a>
+              <a role="button" onclick="formHapusBankPengguna(${v.id})" class="btn btn-sm btn-danger"><i class="fas fa-trash"></i></a>
               </div>
             `;
             },
             className: "text-center",
           },
         ],
+      });
+    },
+  });
+}
+function tambahBank() {
+  $("#id").val("");
+  $("#user_id").val("");
+  $("#daftar_bank_id").val("");
+  $("#nomor_rekening").val("");
+  getDaftarBankSelect();
+  getUsersSelect();
+  $("#modalBankPengguna").modal("show");
+}
+function formEditBankPengguna(id) {
+  $.ajax({
+    type: "GET",
+    url: baseUrl + "bank/" + id,
+
+    success: function (response) {
+      var kt = response.data[0];
+      $("#id").val(kt.id);
+      $("#user_id").val(kt.user_id);
+      $("#daftar_bank_id").val(kt.daftar_bank_id);
+      $("#nomor_rekening").val(kt.nomor_rekening);
+
+      getDaftarBankSelect();
+      getUsersSelect();
+      $("#modalBankPengguna").modal("show");
+    },
+    error: function (error) {
+      Swal.fire({
+        icon: "error",
+        title: "Oops...",
+        text: error.responseJSON.message,
+      });
+    },
+  });
+}
+function formHapusBankPengguna(id) {
+  $.ajax({
+    type: "GET",
+    url: baseUrl + "bank/" + id,
+
+    success: function (response) {
+      var item = response.data[0];
+      $("#buttonHapusBank").attr("data-id", item.id);
+      $("#nama_hapus").text(item.nama_bank);
+
+      $("#modalHapusBank").modal("show");
+    },
+    error: function (error) {
+      Swal.fire({
+        icon: "error",
+        title: "Oops...",
+        text: error.responseJSON.message,
+      });
+    },
+  });
+}
+function submitBank() {
+  var form = document.getElementById("formBankPengguna");
+  var formData = new FormData(form);
+
+  $.ajax({
+    type: "POST",
+    url: baseUrl + "bank/",
+    data: formData,
+    processData: false,
+    contentType: false,
+    success: function (response) {
+      if (response && (response.status === 200 || response.status === 201)) {
+        Swal.fire({
+          icon: "success",
+          title: "Sukses",
+          text: response.data.messages,
+          toast: true,
+          position: "top-end",
+          showConfirmButton: false,
+          timer: 3000,
+        });
+      } else {
+        Swal.fire({
+          icon: "error",
+          title: "Oops...",
+          text: response.data.messages,
+        });
+      }
+
+      $("#modalBankPengguna").modal("hide");
+      $(".modal-backdrop").remove();
+
+      // Open pages success
+      bank();
+    },
+    error: function (error) {
+      Swal.fire({
+        icon: "error",
+        title: "Oops...",
+        text: error.responseJSON.message,
+      });
+      $("#modalBankPengguna").modal("hide");
+      $(".modal-backdrop").remove();
+    },
+  });
+}
+function hapusBank() {
+  $.ajax({
+    url: baseUrl + "bank/" + $("#buttonHapusBank").attr("data-id"),
+    method: "DELETE",
+    success: function (response) {
+      if (response && response.status === 204) {
+        Swal.fire({
+          icon: "success",
+          title: "Sukses",
+          text: "Data Bank berhasil dihapus",
+          toast: true,
+          position: "top-end",
+          showConfirmButton: false,
+          timer: 3000,
+        });
+      } else {
+        Swal.fire({
+          icon: "error",
+          title: "Oops...",
+          text: "Gagal menghapus data bank!",
+        });
+      }
+      // open pages success
+      daftar_bank();
+
+      $("#modalHapusBank").modal("hide");
+      $(".modal-backdrop").remove();
+    },
+    error: function (error) {
+      $("#modalHapusBank").modal("hide");
+      $(".modal-backdrop").remove();
+      Swal.fire({
+        icon: "error",
+        title: "Oops...",
+        text: error.responseJSON.message,
       });
     },
   });
@@ -1243,21 +1381,167 @@ function daftar_bank() {
             },
             className: "text-center",
           },
-          { data: "logo_bank" },
+          {
+            data: null,
+            render: function (data, type, v) {
+              if (v.logo_bank && v.logo_bank.trim() !== "") {
+                return `
+                  <div class="text-center">
+                    <img src="${v.logo_bank}" alt="" style="max-width: 50px; max-height: 50px;">
+                  </div>
+                `;
+              } else {
+                return "Tidak ada gambar";
+              }
+            },
+            className: "text-center",
+          },
           { data: "nama_bank" },
           {
             data: null,
             render: function (data, type, v) {
               return `
               <div class="text-center">
-              <a role="button" onclick="editBank(${v.id})" class="btn btn-sm btn-info"><i class="fas fa-edit"></i></a>
-              <a role="button" data-toggle="modal" data-target="#ubahBank${v.id}" class="btn btn-sm btn-danger"><i class="fas fa-trash"></i></a>
+              <a role="button" onclick="formEditBank(${v.id})" class="btn btn-sm btn-info"><i class="fas fa-edit"></i></a>
+              <a role="button" onclick="formHapusBank(${v.id})" class="btn btn-sm btn-danger"><i class="fas fa-trash"></i></a>
               </div>
             `;
             },
             className: "text-center",
           },
         ],
+      });
+    },
+  });
+}
+function tambahDaftarBank() {
+  $("#id").val("");
+  $("#nama_bank").val("");
+  $("#modalDaftarBank").modal("show");
+}
+function formEditBank(id) {
+  $.ajax({
+    type: "GET",
+    url: baseUrl + "daftar_bank/" + id,
+
+    success: function (response) {
+      var kt = response.data[0];
+      $("#id").val(kt.id);
+      $("#nama_bank").val(kt.nama_bank);
+
+      $("#modalDaftarBank").modal("show");
+    },
+    error: function (error) {
+      Swal.fire({
+        icon: "error",
+        title: "Oops...",
+        text: error.responseJSON.message,
+      });
+    },
+  });
+}
+function formHapusBank(id) {
+  $.ajax({
+    type: "GET",
+    url: baseUrl + "daftar_bank/" + id,
+
+    success: function (response) {
+      var item = response.data[0];
+      $("#buttonHapusDaftarBank").attr("data-id", item.id);
+      $("#nama_hapus").text(item.nama_bank);
+
+      $("#modalHapusDaftarbank").modal("show");
+    },
+    error: function (error) {
+      Swal.fire({
+        icon: "error",
+        title: "Oops...",
+        text: error.responseJSON.message,
+      });
+    },
+  });
+}
+function submitDaftarBank() {
+  var form = document.getElementById("formDaftarBank");
+  var formData = new FormData(form);
+
+  $.ajax({
+    type: "POST",
+    url: baseUrl + "daftar_bank/",
+    data: formData,
+    processData: false,
+    contentType: false,
+    success: function (response) {
+      if (response && (response.status === 200 || response.status === 201)) {
+        Swal.fire({
+          icon: "success",
+          title: "Sukses",
+          text: response.data.messages,
+          toast: true,
+          position: "top-end",
+          showConfirmButton: false,
+          timer: 3000,
+        });
+      } else {
+        Swal.fire({
+          icon: "error",
+          title: "Oops...",
+          text: response.data.messages,
+        });
+      }
+
+      $("#modalDaftarBank").modal("hide");
+      $(".modal-backdrop").remove();
+
+      // Open pages success
+      daftar_bank();
+    },
+    error: function (error) {
+      Swal.fire({
+        icon: "error",
+        title: "Oops...",
+        text: error.responseJSON.message,
+      });
+      $("#modalDaftarBank").modal("hide");
+      $(".modal-backdrop").remove();
+    },
+  });
+}
+function hapusDaftarBank() {
+  $.ajax({
+    url: baseUrl + "daftar_bank/" + $("#buttonHapusDaftarBank").attr("data-id"),
+    method: "DELETE",
+    success: function (response) {
+      if (response && response.status === 204) {
+        Swal.fire({
+          icon: "success",
+          title: "Sukses",
+          text: "Daftar Bank berhasil dihapus",
+          toast: true,
+          position: "top-end",
+          showConfirmButton: false,
+          timer: 3000,
+        });
+      } else {
+        Swal.fire({
+          icon: "error",
+          title: "Oops...",
+          text: "Gagal menghapus data bank!",
+        });
+      }
+      // open pages success
+      daftar_bank();
+
+      $("#modalHapusDaftarbank").modal("hide");
+      $(".modal-backdrop").remove();
+    },
+    error: function (error) {
+      $("#modalHapusDaftarbank").modal("hide");
+      $(".modal-backdrop").remove();
+      Swal.fire({
+        icon: "error",
+        title: "Oops...",
+        text: error.responseJSON.message,
       });
     },
   });
@@ -1499,6 +1783,46 @@ function getKateogoriSelect() {
 
         $.each(response.data, function (index, kategori) {
           $("#kategori_id").append('<option value="' + kategori.id + '">' + kategori.nama_kategori + "</option>");
+        });
+      } else {
+        console.log("Respon tidak sesuai format yang diharapkan");
+      }
+    },
+    error: function (error) {
+      console.error("Terjadi kesalahan:", error);
+    },
+  });
+}
+function getUsersSelect() {
+  $.ajax({
+    type: "GET",
+    url: baseUrl + "users",
+    success: function (response) {
+      if (response.data) {
+        $("#user_id").empty();
+
+        $.each(response.data, function (index, user) {
+          $("#user_id").append('<option value="' + user.id + '">' + user.nama_lengkap + "</option>");
+        });
+      } else {
+        console.log("Respon tidak sesuai format yang diharapkan");
+      }
+    },
+    error: function (error) {
+      console.error("Terjadi kesalahan:", error);
+    },
+  });
+}
+function getDaftarBankSelect() {
+  $.ajax({
+    type: "GET",
+    url: baseUrl + "daftar_bank",
+    success: function (response) {
+      if (response.data) {
+        $("#daftar_bank_id").empty();
+
+        $.each(response.data, function (index, daftar_bank) {
+          $("#daftar_bank_id").append('<option value="' + daftar_bank.id + '">' + daftar_bank.nama_bank + "</option>");
         });
       } else {
         console.log("Respon tidak sesuai format yang diharapkan");

@@ -3,7 +3,7 @@
     <div class="card">
       <div class="card-header">
         <h3 class="card-title">Manajemen Bank Pengguna</h3>
-        <button role="button" class="btn btn-danger btn-sm float-right" data-toggle="modal" data-target="#tambahBank">
+        <button role="button" class="btn btn-primary btn-sm float-right" onclick="tambahBank()">
           <i class="fa fa-user-plus"></i> Tambah Bank Baru
         </button>
       </div>
@@ -12,9 +12,8 @@
           <table id="tablerifkkimaulana" class="table table-bordered table-striped">
             <thead>
               <tr>
-                <th class="text-center">#</th>
+                <th class="text-center">No</th>
                 <th>Pengguna</th>
-                <th>Nama Lengkap</th>
                 <th>Nomor Rekening</th>
                 <th>Bank Jenis</th>
                 <th>Aksi</th>
@@ -27,3 +26,61 @@
     </div>
   </div>
 </section>
+
+<!-- Form Pengguna -->
+<div class="modal fade" id="modalBankPengguna">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h6 class="modal-title">Tambah Kategori</h6>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <form id="formBankPengguna" enctype="multipart/form-data">
+          <input type="hidden" id="id" name="id" />
+          <div class="form-group">
+            <label for="daftar_bank_id">Pilih Bank</label>
+            <select name="daftar_bank_id" id="daftar_bank_id" class="form-control"></select>
+          </div>
+          <div class="form-group">
+            <label for="user_id">Pilih Pemilik</label>
+            <select name="user_id" id="user_id" class="form-control"></select>
+          </div>
+          <div class="form-group">
+            <label for="nomor_rekening">No Rekening</label>
+            <input type="number" class="form-control" id="nomor_rekening" name="nomor_rekening" />
+          </div>
+        </form>
+      </div>
+      <div class="modal-footer float-right">
+        <button type="button" class="btn btn-outline-secondary" data-dismiss="modal">Close</button>
+        <button type="button" onclick="submitBank()" class="btn btn-primary">Simpan</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Modal Hapus Pengguna -->
+<div class="modal fade" id="modalHapusBank">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h6 class="modal-title">Hapus Bank</h6>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <p>
+          Apakah Anda yakin ingin menghapus Bank <b><span id="nama_hapus"></span></b> ini?
+        </p>
+      </div>
+      <div class="modal-footer float-right">
+        <button type="button" class="btn btn-outline-secondary" data-dismiss="modal">Close</button>
+        <button type="button" onclick="hapusDaftarBank()" id="buttonHapusBank" class="btn btn-danger">Hapus</button>
+      </div>
+    </div>
+  </div>
+</div>
