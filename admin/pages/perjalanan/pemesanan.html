@@ -3,7 +3,7 @@
     <div class="card">
       <div class="card-header">
         <h3 class="card-title">Pemesanan Paket Perjalanan</h3>
-        <button role="button" class="btn btn-danger btn-sm float-right" data-toggle="modal" data-target="#hapusRiwayat">
+        <button role="button" class="btn btn-danger btn-sm float-right" onclick="modalTambahPemesanan()">
           <i class="fa fa-user-plus"></i> Hapus Semua Riwayat
         </button>
       </div>
@@ -29,3 +29,73 @@
     </div>
   </div>
 </section>
+
+<!-- Form Paket Perjalanan -->
+<div class="modal fade" id="modalPemesanan">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h6 class="modal-title">Paket Perjalanan</h6>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <form id="formPaketPerjalanan" enctype="multipart/form-data">
+          <input type="hidden" id="id" name="id" />
+          <div class="form-group">
+            <label for="user_id">Pilih Pengguna</label>
+            <select name="user_id" id="user_id"></select>
+          </div>
+          <div class="form-group">
+            <label for="paket_id">Pilih Paket</label>
+            <select name="paket_id" id="paket_id"></select>
+          </div>
+          <div class="form-group">
+            <label for="jumlah_peserta">Jumlah Peserta</label>
+            <input type="text" class="form-control" id="jumlah_peserta" name="jumlah_peserta" />
+          </div>
+          <div class="form-group">
+            <label for="Status">Status Transaksi</label>
+            <select name="Status" id="Status" class="form-control">
+              <option value="pending">Pending</option>
+              <option value="dibayar">Dibayar</option>
+              <option value="selesai">Selesai</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label for="jumlah_pembayaran">Jumlah Pembayaran</label>
+            <input type="text" class="form-control" id="jumlah_pembayaran" name="jumlah_pembayaran" disabled />
+          </div>
+        </form>
+      </div>
+      <div class="modal-footer float-right">
+        <button type="button" class="btn btn-outline-secondary" data-dismiss="modal">Close</button>
+        <button type="button" onclick="submitPemesanan()" class="btn btn-primary">Simpan</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Modal Hapus Paket Perjalanan -->
+<div class="modal fade" id="modalHapusPemesanan">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h6 class="modal-title">Hapus Paket Perjalanan</h6>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <p>
+          Apakah Anda yakin ingin menghapus Pemesanan Perjalanan <b><span id="nama_hapus"></span></b> ini?
+        </p>
+      </div>
+      <div class="modal-footer float-right">
+        <button type="button" class="btn btn-outline-secondary" data-dismiss="modal">Close</button>
+        <button type="button" onclick="hapusPemesanan()" id="hapusButtonPemesanan" class="btn btn-danger">Hapus</button>
+      </div>
+    </div>
+  </div>
+</div>

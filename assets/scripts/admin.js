@@ -1078,14 +1078,158 @@ function paket_perjalanan() {
             render: function (data, type, v) {
               return `
               <div class="text-center">
-              <a role="button" onclick="tambahDestinasi(${v.id})" class="btn btn-sm btn-info"><i class="fas fa-edit"></i></a>
-              <a role="button" data-toggle="modal" data-target="#hapusDestinasi${v.id}" class="btn btn-sm btn-danger"><i class="fas fa-trash"></i></a>
+              <a role="button" onclick="formEditPaketPerjalanan(${v.id})" class="btn btn-sm btn-info"><i class="fas fa-edit"></i></a>
+              <a role="button" onclick="formHapusPaketPerjalanan(${v.id})" class="btn btn-sm btn-danger"><i class="fas fa-trash"></i></a>
               </div>
             `;
             },
             className: "text-center",
           },
         ],
+      });
+    },
+  });
+}
+function tambahModalPaketPerjalanan() {
+  $("#id").val("");
+  $("#kategori_id").val("");
+  $("#nama_paket").val("");
+  $("#deskripsi").val("");
+  $("#harga_paket").val("");
+  $("#kuota_peserta").val("");
+
+  getKateogoriPerjalananSelect();
+  $("#modalPaketPerjalanan").modal("show");
+}
+function formEditPaketPerjalanan(id) {
+  $.ajax({
+    type: "GET",
+    url: baseUrl + "paket_perjalanan/" + id,
+
+    success: function (response) {
+      console.log(id);
+
+      var kt = response.data[0];
+      $("#id").val(kt.id);
+      $("#kategori_id").val(kt.kategori_id);
+      $("#nama_paket").val(kt.nama_paket);
+      $("#deskripsi").val(kt.deskripsi);
+      $("#harga_paket").val(kt.harga_paket);
+      $("#kuota_peserta").val(kt.kuota_peserta);
+      getKateogoriPerjalananSelect();
+      $("#modalPaketPerjalanan").modal("show");
+    },
+    error: function (error) {
+      Swal.fire({
+        icon: "error",
+        title: "Oops...",
+        text: error.responseJSON.message,
+      });
+    },
+  });
+}
+function submitPaketPerjalanan() {
+  var form = document.getElementById("formPaketPerjalanan");
+  var formData = new FormData(form);
+
+  $.ajax({
+    type: "POST",
+    url: baseUrl + "paket_perjalanan",
+    data: formData,
+    processData: false,
+    contentType: false,
+    success: function (response) {
+      if (response && (response.status === 200 || response.status === 201)) {
+        Swal.fire({
+          icon: "success",
+          title: "Sukses",
+          text: response.data.messages,
+          toast: true,
+          position: "top-end",
+          showConfirmButton: false,
+          timer: 3000,
+        });
+      } else {
+        Swal.fire({
+          icon: "error",
+          title: "Oops...",
+          text: response.data.messages,
+        });
+      }
+
+      $("#modalPaketPerjalanan").modal("hide");
+      $(".modal-backdrop").remove();
+
+      // Open pages success
+      paket_perjalanan();
+    },
+    error: function (error) {
+      Swal.fire({
+        icon: "error",
+        title: "Oops...",
+        text: error.responseJSON.message,
+      });
+      $("#modalPaketPerjalanan").modal("hide");
+      $(".modal-backdrop").remove();
+    },
+  });
+}
+function formHapusPaketPerjalanan(id) {
+  $.ajax({
+    type: "GET",
+    url: baseUrl + "paket_perjalanan/" + id,
+
+    success: function (response) {
+      var item = response.data[0];
+      $("#hapusButtonPaketPerjalanan").attr("data-id", item.id);
+      $("#nama_hapus").text(item.nama_paket);
+
+      $("#modalHapusPaketPerjalanan").modal("show");
+    },
+    error: function (error) {
+      Swal.fire({
+        icon: "error",
+        title: "Oops...",
+        text: error.responseJSON.message,
+      });
+    },
+  });
+}
+function hapusPaketPerjalanan() {
+  $.ajax({
+    url: baseUrl + "paket_perjalanan/" + $("#hapusButtonPaketPerjalanan").attr("data-id"),
+    method: "DELETE",
+    success: function (response) {
+      if (response && response.status === 204) {
+        Swal.fire({
+          icon: "success",
+          title: "Sukses",
+          text: "Paket Perjalanan berhasil Dihapus",
+          toast: true,
+          position: "top-end",
+          showConfirmButton: false,
+          timer: 3000,
+        });
+      } else {
+        Swal.fire({
+          icon: "error",
+          title: "Oops...",
+          text: error.responseJSON.message,
+        });
+      }
+      // open pages success
+      paket_perjalanan();
+
+      $("#modalHapusPaketPerjalanan").modal("hide");
+      $(".modal-backdrop").remove();
+    },
+    error: function (error) {
+      $("#modalHapusPaketPerjalanan").modal("hide");
+      $(".modal-backdrop").remove();
+      Swal.fire({
+        icon: "error",
+        title: "Oops...",
+        text: error.responseJSON.message,
       });
     },
   });
@@ -1333,6 +1477,140 @@ function pemesanan_perjalanan() {
             className: "text-center",
           },
         ],
+      });
+    },
+  });
+}
+function tambahModalPemesanan() {
+  $("#id").val("");
+  $("#nama_kategori").val("");
+  $("#modalKategori").modal("show");
+}
+function formEditPemesanan(id) {
+  $.ajax({
+    type: "GET",
+    url: baseUrl + "kategori/" + id,
+
+    success: function (response) {
+      console.log(id);
+
+      var kt = response.data[0];
+      $("#id").val(kt.id);
+      $("#nama_kategori").val(kt.nama_kategori);
+
+      $("#modalKategori").modal("show");
+    },
+    error: function (error) {
+      Swal.fire({
+        icon: "error",
+        title: "Oops...",
+        text: error.responseJSON.message,
+      });
+    },
+  });
+}
+function submitPemesanan() {
+  var form = document.getElementById("formKategori");
+  var formData = new FormData(form);
+
+  $.ajax({
+    type: "POST",
+    url: baseUrl + "kategori/",
+    data: formData,
+    processData: false,
+    contentType: false,
+    success: function (response) {
+      if (response && (response.status === 200 || response.status === 201)) {
+        Swal.fire({
+          icon: "success",
+          title: "Sukses",
+          text: response.data.messages,
+          toast: true,
+          position: "top-end",
+          showConfirmButton: false,
+          timer: 3000,
+        });
+      } else {
+        Swal.fire({
+          icon: "error",
+          title: "Oops...",
+          text: response.data.messages,
+        });
+      }
+
+      $("#modalKategori").modal("hide");
+      $(".modal-backdrop").remove();
+
+      // Open pages success
+      kategori_inventaris();
+    },
+    error: function (error) {
+      Swal.fire({
+        icon: "error",
+        title: "Oops...",
+        text: error.responseJSON.message,
+      });
+      $("#modal").modal("hide");
+      $(".modal-backdrop").remove();
+    },
+  });
+}
+function formHapusPemesanan(id) {
+  $.ajax({
+    type: "GET",
+    url: baseUrl + "kategori/" + id,
+
+    success: function (response) {
+      var kt = response.data[0];
+      $("#hapusButtonPemesanan").attr("data-id", kt.id);
+      $("#nama_hapus").text(kt.nama_kategori);
+
+      $("#modalHapusPemesanan").modal("show");
+    },
+    error: function (error) {
+      Swal.fire({
+        icon: "error",
+        title: "Oops...",
+        text: error.responseJSON.message,
+      });
+    },
+  });
+}
+function hapusPemesanan() {
+  $.ajax({
+    url: baseUrl + "pemesanan_perjalanan/" + $("#hapusButtonPemesanan").attr("data-id"),
+    method: "DELETE",
+    success: function (response) {
+      if (response && response.status === 204) {
+        Swal.fire({
+          icon: "success",
+          title: "Sukses",
+          text: "Kategori berhasil ditambahkan",
+          toast: true,
+          position: "top-end",
+          showConfirmButton: false,
+          timer: 3000,
+        });
+      } else {
+        Swal.fire({
+          icon: "error",
+          title: "Oops...",
+          text: error.responseJSON.message,
+        });
+      }
+      // open pages success
+      kategori_inventaris();
+
+      $("#modalHapusKategori").modal("hide");
+      $(".modal-backdrop").remove();
+    },
+    error: function (error) {
+      $("#modalHapusKategori").modal("hide");
+      $(".modal-backdrop").remove();
+      Swal.fire({
+        icon: "error",
+        title: "Oops...",
+        text: error.responseJSON.message,
       });
     },
   });
@@ -1962,6 +2240,26 @@ function getKateogoriSelect() {
     },
   });
 }
+function getKateogoriPerjalananSelect() {
+  $.ajax({
+    type: "GET",
+    url: baseUrl + "kategori_perjalanan",
+    success: function (response) {
+      if (response.data) {
+        $("#kategori_id").empty();
+
+        $.each(response.data, function (index, kategori) {
+          $("#kategori_id").append('<option value="' + kategori.id + '">' + kategori.nama_kategori + "</option>");
+        });
+      } else {
+        console.log("Respon tidak sesuai format yang diharapkan");
+      }
+    },
+    error: function (error) {
+      console.error("Terjadi kesalahan:", error);
+    },
+  });
+}
 function getUsersSelect() {
   $.ajax({
     type: "GET",
@@ -1992,6 +2290,26 @@ function getDaftarBankSelect() {
 
         $.each(response.data, function (index, daftar_bank) {
           $("#daftar_bank_id").append('<option value="' + daftar_bank.id + '">' + daftar_bank.nama_bank + "</option>");
+        });
+      } else {
+        console.log("Respon tidak sesuai format yang diharapkan");
+      }
+    },
+    error: function (error) {
+      console.error("Terjadi kesalahan:", error);
+    },
+  });
+}
+function getPaketPerjalananSelect() {
+  $.ajax({
+    type: "GET",
+    url: baseUrl + "paket_perjalanan",
+    success: function (response) {
+      if (response.data) {
+        $("#paket_id").empty();
+
+        $.each(response.data, function (index, paket) {
+          $("#paket_id").append('<option value="' + paket.id + '">' + paket.nama_paket + "</option>");
         });
       } else {
         console.log("Respon tidak sesuai format yang diharapkan");
