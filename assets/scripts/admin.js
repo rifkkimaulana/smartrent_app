@@ -438,6 +438,21 @@ function inventaris() {
             },
             className: "text-center",
           },
+          {
+            data: null,
+            render: function (data, type, v) {
+              if (v.gambar && v.gambar.trim() !== "") {
+                return `
+                  <div class="text-center">
+                    <img src="${v.gambar}" alt="" style="max-width: 50px; max-height: 50px;">
+                  </div>
+                `;
+              } else {
+                return "No Image";
+              }
+            },
+            className: "text-center",
+          },
           { data: "nama_barang" },
           { data: "kategori_id", render: renderNamaKategori },
           { data: "harga_sewa" },
@@ -845,6 +860,21 @@ function destinasi() {
             },
             className: "text-center",
           },
+          {
+            data: null,
+            render: function (data, type, v) {
+              if (v.gambar_destinasi && v.gambar_destinasi.trim() !== "") {
+                return `
+                  <div class="text-center">
+                    <img src="${v.gambar_destinasi}" alt="" style="max-width: 50px; max-height: 50px;">
+                  </div>
+                `;
+              } else {
+                return "No Image";
+              }
+            },
+            className: "text-center",
+          },
           { data: "nama_destinasi" },
           { data: "lokasi" },
           { data: "created_at" },
@@ -853,8 +883,8 @@ function destinasi() {
             render: function (data, type, v) {
               return `
               <div class="text-center">
-              <a role="button" onclick="tambahDestinasi(${v.id})" class="btn btn-sm btn-info"><i class="fas fa-edit"></i></a>
-              <a role="button" onclick="hapusDestinasi(${v.id})" class="btn btn-sm btn-danger"><i class="fas fa-trash"></i></a>
+              <a role="button" onclick="formEditDestinasi(${v.id})" class="btn btn-sm btn-info"><i class="fas fa-edit"></i></a>
+              <a role="button" onclick="formHapusDestinasi(${v.id})" class="btn btn-sm btn-danger"><i class="fas fa-trash"></i></a>
               </div>
             `;
             },
@@ -867,22 +897,26 @@ function destinasi() {
 }
 function tambahModalDestinasi() {
   $("#id").val("");
-  $("#nama_kategori").val("");
-  $("#modalKategori").modal("show");
+  $("#nama_destinasi").val("");
+  $("#deskripsi").val("");
+  $("#lokasi").val("");
+  $("#modalDestinasi").modal("show");
 }
 function formEditDestinasi(id) {
   $.ajax({
     type: "GET",
-    url: baseUrl + "kategori/" + id,
+    url: baseUrl + "destinasi/" + id,
 
     success: function (response) {
       console.log(id);
 
       var kt = response.data[0];
       $("#id").val(kt.id);
-      $("#nama_kategori").val(kt.nama_kategori);
+      $("#nama_destinasi").val(kt.nama_destinasi);
+      $("#deskripsi").val(kt.deskripsi);
+      $("#lokasi").val(kt.lokasi);
 
-      $("#modalKategori").modal("show");
+      $("#modalDestinasi").modal("show");
     },
     error: function (error) {
       Swal.fire({
@@ -896,14 +930,14 @@ function formEditDestinasi(id) {
 function formHapusDestinasi(id) {
   $.ajax({
     type: "GET",
-    url: baseUrl + "inventaris/" + id,
+    url: baseUrl + "destinasi/" + id,
 
     success: function (response) {
       var item = response.data[0];
-      $("#hapusButtonInventaris").attr("data-id", item.id);
-      $("#nama_hapus").text(item.nama_barang);
+      $("#hapusButtonDestinasi").attr("data-id", item.id);
+      $("#nama_hapus").text(item.nama_destinasi);
 
-      $("#modalHapusKategori").modal("show");
+      $("#modalHapusDestinasi").modal("show");
     },
     error: function (error) {
       Swal.fire({
@@ -915,12 +949,12 @@ function formHapusDestinasi(id) {
   });
 }
 function submitDestinasi() {
-  var form = document.getElementById("formKategori");
+  var form = document.getElementById("formDestinasi");
   var formData = new FormData(form);
 
   $.ajax({
     type: "POST",
-    url: baseUrl + "kategori/",
+    url: baseUrl + "destinasi",
     data: formData,
     processData: false,
     contentType: false,
@@ -943,11 +977,11 @@ function submitDestinasi() {
         });
       }
 
-      $("#modalKategori").modal("hide");
+      $("#modalDestinasi").modal("hide");
       $(".modal-backdrop").remove();
 
       // Open pages success
-      kategori_inventaris();
+      destinasi();
     },
     error: function (error) {
       Swal.fire({
@@ -955,21 +989,21 @@ function submitDestinasi() {
         title: "Oops...",
         text: error.responseJSON.message,
       });
-      $("#modalKategori").modal("hide");
+      $("#modalDestinasi").modal("hide");
       $(".modal-backdrop").remove();
     },
   });
 }
 function hapusDestinasi() {
   $.ajax({
-    url: baseUrl + "inventaris/" + $("#hapusButtonInventaris").attr("data-id"),
+    url: baseUrl + "destinasi/" + $("#hapusButtonDestinasi").attr("data-id"),
     method: "DELETE",
     success: function (response) {
       if (response && response.status === 204) {
         Swal.fire({
           icon: "success",
           title: "Sukses",
-          text: "Inventaris berhasil ditambahkan",
+          text: "Destinasi berhasil Dihapus",
           toast: true,
           position: "top-end",
           showConfirmButton: false,
@@ -983,13 +1017,13 @@ function hapusDestinasi() {
         });
       }
       // open pages success
-      inventaris();
+      destinasi();
 
-      $("#modalHapusInventaris").modal("hide");
+      $("#modalHapusDestinasi").modal("hide");
       $(".modal-backdrop").remove();
     },
     error: function (error) {
-      $("#modalHapusInventaris").modal("hide");
+      $("#modalHapusDestinasi").modal("hide");
       $(".modal-backdrop").remove();
       Swal.fire({
         icon: "error",
@@ -1092,14 +1126,149 @@ function kategori_perjalanan() {
             render: function (data, type, v) {
               return `
               <div class="text-center">
-              <a role="button" onclick="tambahDestinasi(${v.id})" class="btn btn-sm btn-info"><i class="fas fa-edit"></i></a>
-              <a role="button" data-toggle="modal" data-target="#hapusDestinasi${v.id}" class="btn btn-sm btn-danger"><i class="fas fa-trash"></i></a>
+              <a role="button" onclick="formEditKategoriPerjalanan(${v.id})" class="btn btn-sm btn-info"><i class="fas fa-edit"></i></a>
+              <a role="button" onclick="formHapusKategoriPerjalanan(${v.id})" class="btn btn-sm btn-danger"><i class="fas fa-trash"></i></a>
               </div>
             `;
             },
             className: "text-center",
           },
         ],
+      });
+    },
+  });
+}
+function tambahModalKategoriPerjalanan() {
+  $("#id").val("");
+  $("#nama_kategori").val("");
+
+  $("#modalKategoriPerjalanan").modal("show");
+}
+function formEditKategoriPerjalanan(id) {
+  $.ajax({
+    type: "GET",
+    url: baseUrl + "destinasi/" + id,
+
+    success: function (response) {
+      console.log(id);
+
+      var kt = response.data[0];
+      $("#id").val(kt.id);
+      $("#nama_kategori").val(kt.nama_kategori);
+
+      $("#modalKategoriPerjalanan").modal("show");
+    },
+    error: function (error) {
+      Swal.fire({
+        icon: "error",
+        title: "Oops...",
+        text: error.responseJSON.message,
+      });
+    },
+  });
+}
+function formHapusKategoriPerjalanan(id) {
+  $.ajax({
+    type: "GET",
+    url: baseUrl + "kategori_perjalanan/" + id,
+
+    success: function (response) {
+      var item = response.data[0];
+      $("#hapusButtonKategoriPerjalanan").attr("data-id", item.id);
+      $("#nama_hapus").text(item.nama_destinasi);
+
+      $("#modalHapusDestinasi").modal("show");
+    },
+    error: function (error) {
+      Swal.fire({
+        icon: "error",
+        title: "Oops...",
+        text: error.responseJSON.message,
+      });
+    },
+  });
+}
+function submitKategoriPerjalanan() {
+  var form = document.getElementById("formDestinasi");
+  var formData = new FormData(form);
+
+  $.ajax({
+    type: "POST",
+    url: baseUrl + "destinasi",
+    data: formData,
+    processData: false,
+    contentType: false,
+    success: function (response) {
+      if (response && (response.status === 200 || response.status === 201)) {
+        Swal.fire({
+          icon: "success",
+          title: "Sukses",
+          text: response.data.messages,
+          toast: true,
+          position: "top-end",
+          showConfirmButton: false,
+          timer: 3000,
+        });
+      } else {
+        Swal.fire({
+          icon: "error",
+          title: "Oops...",
+          text: response.data.messages,
+        });
+      }
+
+      $("#modalDestinasi").modal("hide");
+      $(".modal-backdrop").remove();
+
+      // Open pages success
+      destinasi();
+    },
+    error: function (error) {
+      Swal.fire({
+        icon: "error",
+        title: "Oops...",
+        text: error.responseJSON.message,
+      });
+      $("#modalDestinasi").modal("hide");
+      $(".modal-backdrop").remove();
+    },
+  });
+}
+function hapusKategoriPerjalanan() {
+  $.ajax({
+    url: baseUrl + "destinasi/" + $("#hapusButtonKategoriPerjalanan").attr("data-id"),
+    method: "DELETE",
+    success: function (response) {
+      if (response && response.status === 204) {
+        Swal.fire({
+          icon: "success",
+          title: "Sukses",
+          text: "Destinasi berhasil Dihapus",
+          toast: true,
+          position: "top-end",
+          showConfirmButton: false,
+          timer: 3000,
+        });
+      } else {
+        Swal.fire({
+          icon: "error",
+          title: "Oops...",
+          text: error.responseJSON.message,
+        });
+      }
+      // open pages success
+      destinasi();
+
+      $("#modalHapusDestinasi").modal("hide");
+      $(".modal-backdrop").remove();
+    },
+    error: function (error) {
+      $("#modalHapusDestinasi").modal("hide");
+      $(".modal-backdrop").remove();
+      Swal.fire({
+        icon: "error",
+        title: "Oops...",
+        text: error.responseJSON.message,
       });
     },
   });
