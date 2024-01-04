@@ -1147,7 +1147,7 @@ function tambahModalKategoriPerjalanan() {
 function formEditKategoriPerjalanan(id) {
   $.ajax({
     type: "GET",
-    url: baseUrl + "destinasi/" + id,
+    url: baseUrl + "kategori_perjalanan/" + id,
 
     success: function (response) {
       console.log(id);
@@ -1175,7 +1175,7 @@ function formHapusKategoriPerjalanan(id) {
     success: function (response) {
       var item = response.data[0];
       $("#hapusButtonKategoriPerjalanan").attr("data-id", item.id);
-      $("#nama_hapus").text(item.nama_destinasi);
+      $("#nama_hapus").text(item.nama_kategori);
 
       $("#modalHapusDestinasi").modal("show");
     },
@@ -1189,12 +1189,12 @@ function formHapusKategoriPerjalanan(id) {
   });
 }
 function submitKategoriPerjalanan() {
-  var form = document.getElementById("formDestinasi");
+  var form = document.getElementById("formKategoriPerjalanan");
   var formData = new FormData(form);
 
   $.ajax({
     type: "POST",
-    url: baseUrl + "destinasi",
+    url: baseUrl + "kategori_perjalanan",
     data: formData,
     processData: false,
     contentType: false,
@@ -1221,7 +1221,7 @@ function submitKategoriPerjalanan() {
       $(".modal-backdrop").remove();
 
       // Open pages success
-      destinasi();
+      kategori_perjalanan();
     },
     error: function (error) {
       Swal.fire({
@@ -1236,14 +1236,14 @@ function submitKategoriPerjalanan() {
 }
 function hapusKategoriPerjalanan() {
   $.ajax({
-    url: baseUrl + "destinasi/" + $("#hapusButtonKategoriPerjalanan").attr("data-id"),
+    url: baseUrl + "kategori_perjalanan/" + $("#hapusButtonKategoriPerjalanan").attr("data-id"),
     method: "DELETE",
     success: function (response) {
       if (response && response.status === 204) {
         Swal.fire({
           icon: "success",
           title: "Sukses",
-          text: "Destinasi berhasil Dihapus",
+          text: "Kategori Perjalanan berhasil Dihapus",
           toast: true,
           position: "top-end",
           showConfirmButton: false,
@@ -1257,13 +1257,13 @@ function hapusKategoriPerjalanan() {
         });
       }
       // open pages success
-      destinasi();
+      kategori_perjalanan();
 
-      $("#modalHapusDestinasi").modal("hide");
+      $("#modalHapusKategoriPerjalanan").modal("hide");
       $(".modal-backdrop").remove();
     },
     error: function (error) {
-      $("#modalHapusDestinasi").modal("hide");
+      $("#modalHapusKategoriPerjalanan").modal("hide");
       $(".modal-backdrop").remove();
       Swal.fire({
         icon: "error",

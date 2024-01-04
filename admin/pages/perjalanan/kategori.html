@@ -3,7 +3,7 @@
     <div class="card">
       <div class="card-header">
         <h3 class="card-title">Kategori Perjalanan Wisata</h3>
-        <button role="button" class="btn btn-danger btn-sm float-right" onclick="tambahModalKategoriPerjalanan()">
+        <button role="button" class="btn btn-primary btn-sm float-right" onclick="tambahModalKategoriPerjalanan()">
           <i class="fa fa-user-plus"></i> Tambah Kategori
         </button>
       </div>
@@ -26,43 +26,28 @@
 </section>
 
 <!-- Form Kategori Perjalanan -->
-<div class="modal fade" id="modalDestinasi">
+<div class="modal fade" id="modalKategoriPerjalanan">
   <div class="modal-dialog">
     <div class="modal-content">
       <div class="modal-header">
-        <h6 class="modal-title">Tambah Destinasi</h6>
+        <h6 class="modal-title">Tambah Kategori Perjalanan</h6>
         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
           <span aria-hidden="true">&times;</span>
         </button>
       </div>
       <div class="modal-body">
-        <form id="formDestinasi" enctype="multipart/form-data">
+        <form id="formKategoriPerjalanan" enctype="multipart/form-data">
           <input type="hidden" id="id" name="id" />
+
           <div class="form-group">
-            <label for="customFile">Upload Foto Kategori <small class="text-success"> *Optional</small></label>
-            <div class="custom-file">
-              <input type="file" class="custom-file-input" id="customFile" name="gambar" />
-              <label class="custom-file-label" for="customFile">Upload foto destinasi...</label>
-            </div>
-          </div>
-          <hr />
-          <div class="form-group">
-            <label for="nama_destinasi">Nama Destinasi <small class="text-danger"> *Tidak boleh kosong</small> </label>
-            <input type="text" class="form-control" id="nama_destinasi" name="nama_destinasi" required />
-          </div>
-          <div class="form-group">
-            <label for="lokasi">Lokasi</label>
-            <input type="text" class="form-control" id="lokasi" name="lokasi" />
-          </div>
-          <div class="form-group">
-            <label for="deskripsi">Deskripsi</label>
-            <textarea name="deskripsi" id="deskripsi" cols="30" rows="2" class="form-control"></textarea>
+            <label for="nama_kategori">Nama Kategori</label>
+            <input type="text" class="form-control" id="nama_kategori" name="nama_kategori" />
           </div>
         </form>
       </div>
       <div class="modal-footer float-right">
         <button type="button" class="btn btn-outline-secondary" data-dismiss="modal">Close</button>
-        <button type="button" onclick="submitDestinasi()" class="btn btn-primary">Simpan</button>
+        <button type="button" onclick="submitKategoriPerjalanan()" class="btn btn-primary">Simpan</button>
       </div>
     </div>
   </div>
@@ -73,19 +58,19 @@
   <div class="modal-dialog">
     <div class="modal-content">
       <div class="modal-header">
-        <h6 class="modal-title">Hapus Pengguna</h6>
+        <h6 class="modal-title">Hapus Kategori Perjalanan</h6>
         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
           <span aria-hidden="true">&times;</span>
         </button>
       </div>
       <div class="modal-body">
         <p>
-          Apakah Anda yakin ingin menghapus Destinasi <b><span id="nama_hapus"></span></b> ini?
+          Apakah Anda yakin ingin menghapus Kategori Perjalanan <b><span id="nama_hapus"></span></b> ini?
         </p>
       </div>
       <div class="modal-footer float-right">
         <button type="button" class="btn btn-outline-secondary" data-dismiss="modal">Close</button>
-        <button type="button" onclick="hapusDestinasi()" id="hapusButtonDestinasi" class="btn btn-danger">Hapus</button>
+        <button type="button" onclick="hapusKategoriPerjalanan()" id="hapusButtonKategoriPerjalanan" class="btn btn-danger">Hapus</button>
       </div>
     </div>
   </div>
