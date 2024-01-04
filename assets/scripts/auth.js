@@ -25,6 +25,7 @@ $(document).ready(function () {
         if (response.status === 200) {
           localStorage.setItem("id", response.data.id);
           localStorage.setItem("user_level", response.data.level_user);
+          localStorage.setItem("nama_lengkap", response.data.nama_lengkap);
 
           Swal.fire({
             icon: "success",

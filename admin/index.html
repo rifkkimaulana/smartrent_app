@@ -86,6 +86,7 @@
               role="menu"
               data-accordion="false"
             >
+              <li class="nav-header">DASHBOARD</li>
               <!-- Dashboard -->
               <li class="nav-item">
                 <a role="button" onclick="dashboard()" class="nav-link">
@@ -101,23 +102,7 @@
                 </a>
               </li>
 
-              <!-- Transaksi -->
-              <li class="nav-item">
-                <a role="button" onclick="transaksi()" class="nav-link">
-                  <i class="nav-icon fas fa-exchange-alt"></i>
-                  <p>Transaksi</p>
-                </a>
-              </li>
-
-              <!-- Pembayaran -->
-              <li class="nav-item">
-                <a role="button" onclick="pembayaran()" class="nav-link">
-                  <i class="nav-icon fas fa-money-bill-wave"></i>
-                  <p>Pembayaran</p>
-                </a>
-              </li>
-
-              <li class="nav-header">FITUR SEWA</li>
+              <li class="nav-header">FITUR RENTAL & PERJALANAN</li>
               <!-- Inventaris -->
               <li class="nav-item">
                 <a role="button" class="nav-link">
@@ -132,6 +117,12 @@
                     </a>
                   </li>
                   <li class="nav-item">
+                    <a role="button" onclick="transaksi()" class="nav-link">
+                      <i class="fas fa-exchange-alt nav-icon"></i>
+                      <p>Transaksi</p>
+                    </a>
+                  </li>
+                  <li class="nav-item">
                     <a role="button" onclick="kategori_inventaris()" class="nav-link">
                       <i class="fas fa-tag nav-icon"></i>
                       <p>Kategori</p>
@@ -140,7 +131,6 @@
                 </ul>
               </li>
 
-              <li class="nav-header">FITUR PERJALANAN</li>
               <!-- Perjalanan -->
               <li class="nav-item">
                 <a role="button" class="nav-link">
@@ -185,9 +175,16 @@
                   </li>
                 </ul>
               </li>
+              <!-- Pembayaran -->
+              <li class="nav-header">PEMBAYARAN ONLINE</li>
+              <li class="nav-item">
+                <a role="button" onclick="pembayaran()" class="nav-link">
+                  <i class="nav-icon fas fa-money-bill-wave"></i>
+                  <p>Duitku Payment</p>
+                </a>
+              </li>
 
               <li class="nav-header">APLIKASI</li>
-
               <!-- Pengaturan -->
               <li class="nav-item">
                 <a role="button" class="nav-link">
@@ -233,6 +230,7 @@
               </li>
 
               <!-- Riwayat -->
+              <li class="nav-header">RIWAYAT PENGGUN</li>
               <li class="nav-item">
                 <a role="button" onclick="riwayat()" class="nav-link">
                   <i class="nav-icon fas fa-history"></i>

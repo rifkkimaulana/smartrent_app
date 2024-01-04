@@ -3,8 +3,8 @@
     <div class="card">
       <div class="card-header">
         <h3 class="card-title">Pemesanan Paket Perjalanan</h3>
-        <button role="button" class="btn btn-danger btn-sm float-right" onclick="modalTambahPemesanan()">
-          <i class="fa fa-user-plus"></i> Hapus Semua Riwayat
+        <button role="button" class="btn btn-primary btn-sm float-right" onclick="tambahModalPemesanan()">
+          <i class="fa fa-plus"></i> Tambahkan Pemesanan
         </button>
       </div>
       <div class="card-body">
@@ -12,14 +12,14 @@
           <table id="tablerifkkimaulana" class="table table-bordered table-striped">
             <thead>
               <tr>
-                <th class="text-center">#</th>
+                <th class="text-center">No</th>
                 <th>Pemesan</th>
                 <th>Paket</th>
                 <th>Jumlah Peserta</th>
                 <th>Total Pembayaran</th>
                 <th>Status Pembayaran</th>
                 <th>Dibuat</th>
-                <th>Aksi</th>
+                <th class="text-center">NoAksi</th>
               </tr>
             </thead>
             <tfoot></tfoot>
@@ -41,23 +41,23 @@
         </button>
       </div>
       <div class="modal-body">
-        <form id="formPaketPerjalanan" enctype="multipart/form-data">
+        <form id="formPemesanan" enctype="multipart/form-data">
           <input type="hidden" id="id" name="id" />
           <div class="form-group">
             <label for="user_id">Pilih Pengguna</label>
-            <select name="user_id" id="user_id"></select>
+            <select name="user_id" id="user_id" class="form-control"></select>
           </div>
           <div class="form-group">
             <label for="paket_id">Pilih Paket</label>
-            <select name="paket_id" id="paket_id"></select>
+            <select name="paket_id" id="paket_id" class="form-control"></select>
           </div>
           <div class="form-group">
             <label for="jumlah_peserta">Jumlah Peserta</label>
             <input type="text" class="form-control" id="jumlah_peserta" name="jumlah_peserta" />
           </div>
           <div class="form-group">
-            <label for="Status">Status Transaksi</label>
-            <select name="Status" id="Status" class="form-control">
+            <label for="status_pembayaran">Status Transaksi</label>
+            <select name="status_pembayaran" id="status_pembayaran" class="form-control">
               <option value="pending">Pending</option>
               <option value="dibayar">Dibayar</option>
               <option value="selesai">Selesai</option>

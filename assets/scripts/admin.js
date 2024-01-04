@@ -4,7 +4,7 @@ $(document).ready(function () {
   var userLevel = localStorage.getItem("user_level");
 
   if (!userId && !userLevel) {
-    window.location.href = "/auth";
+    window.location.href = "/admin/auth";
   }
 
   navbar();
@@ -389,14 +389,71 @@ function pembayaran() {
             render: function (data, type, v) {
               return `
               <div class="text-center">
-              <a role="button" onclick="tambahDestinasi(${v.id})" class="btn btn-sm btn-info"><i class="fas fa-edit"></i></a>
-              <a role="button" data-toggle="modal" data-target="#hapusDestinasi${v.id}" class="btn btn-sm btn-danger"><i class="fas fa-trash"></i></a>
+              <a role="button" onclick="formHapusPengguna(${v.id})" class="btn btn-sm btn-danger"><i class="fas fa-trash"></i></a>
               </div>
             `;
             },
             className: "text-center",
           },
         ],
+      });
+    },
+  });
+}
+function formHapusPengguna(id) {
+  $.ajax({
+    type: "GET",
+    url: baseUrl + "pembayaran/" + id,
+
+    success: function (response) {
+      var user = response.data[0];
+      $("#buttonHapusPembayaran").attr("data-id", user.id);
+      $("#nama_hapus").text(user.reference);
+
+      $("#hapusPaymentModal").modal("show");
+    },
+    error: function (error) {
+      Swal.fire({
+        icon: "error",
+        title: "Oops...",
+        text: error.responseJSON.message,
+      });
+    },
+  });
+}
+function hapusCatatanPembayaran() {
+  $.ajax({
+    url: baseUrl + "pembayaran/" + $("#buttonHapusPembayaran").attr("data-id"),
+    method: "DELETE",
+    success: function (response) {
+      pembayaran();
+      if (response && response.status === 204) {
+        Swal.fire({
+          icon: "success",
+          title: "Sukses",
+          text: "Catatan Pembayaran berhasil dihapus",
+          toast: true,
+          position: "top-end",
+          showConfirmButton: false,
+          timer: 3000,
+        });
+      } else {
+        Swal.fire({
+          icon: "error",
+          title: "Oops...",
+          text: error.responseJSON.message,
+        });
+      }
+      $("#hapusPaymentModal").modal("hide");
+      $(".modal-backdrop").remove();
+    },
+    error: function (error) {
+      $("#hapusPaymentModal").modal("hide");
+      $(".modal-backdrop").remove();
+      Swal.fire({
+        icon: "error",
+        title: "Oops...",
+        text: error.responseJSON.message,
       });
     },
   });
@@ -1469,8 +1526,8 @@ function pemesanan_perjalanan() {
             render: function (data, type, v) {
               return `
               <div class="text-center">
-              <a role="button" onclick="tambahPesanan(${v.id})" class="btn btn-sm btn-info"><i class="fas fa-edit"></i></a>
-              <a role="button" data-toggle="modal" data-target="#hapusPesanan${v.id}" class="btn btn-sm btn-danger"><i class="fas fa-trash"></i></a>
+              <a role="button" onclick="formEditPemesanan(${v.id})" class="btn btn-sm btn-info"><i class="fas fa-edit"></i></a>
+              <a role="button" onclick="formHapusPemesanan(${v.id})" class="btn btn-sm btn-danger"><i class="fas fa-trash"></i></a>
               </div>
             `;
             },
@@ -1483,22 +1540,39 @@ function pemesanan_perjalanan() {
 }
 function tambahModalPemesanan() {
   $("#id").val("");
-  $("#nama_kategori").val("");
-  $("#modalKategori").modal("show");
+  $("#user_id").val("");
+  $("#paket_id").val("");
+  $("#jumlah_peserta").val("");
+  $("#total_pemesanan").val("");
+  $("#status_pembayaran").val("");
+
+  getUsersSelect();
+  getPaketPerjalananSelect();
+  $("#modalPemesanan").modal("show");
 }
 function formEditPemesanan(id) {
   $.ajax({
     type: "GET",
-    url: baseUrl + "kategori/" + id,
+    url: baseUrl + "pemesanan_perjalanan/" + id,
 
     success: function (response) {
       console.log(id);
 
       var kt = response.data[0];
       $("#id").val(kt.id);
-      $("#nama_kategori").val(kt.nama_kategori);
+      $("#user_id").val(kt.user_id);
+      $("#paket_id").val(kt.paket_id);
+      $("#jumlah_peserta").val(kt.jumlah_peserta);
+      $("#total_pemesanan").val(kt.total_pemesanan);
+      $("#status_pembayaran").val(kt.status_pembayaran);
 
-      $("#modalKategori").modal("show");
+      getUsersSelect();
+      getPaketPerjalananSelect();
+
+      $("#user_id option[value='" + kt.user_id + "']").prop("selected", true);
+      $("#paket_id option[value='" + kt.paket_id + "']").prop("selected", true);
+      $("#status_pembayaran option[value='" + kt.status_pembayaran + "']").prop("selected", true);
+      $("#modalPemesanan").modal("show");
     },
     error: function (error) {
       Swal.fire({
@@ -1510,12 +1584,12 @@ function formEditPemesanan(id) {
   });
 }
 function submitPemesanan() {
-  var form = document.getElementById("formKategori");
+  var form = document.getElementById("formPemesanan");
   var formData = new FormData(form);
 
   $.ajax({
     type: "POST",
-    url: baseUrl + "kategori/",
+    url: baseUrl + "pemesanan_perjalanan/",
     data: formData,
     processData: false,
     contentType: false,
@@ -1538,11 +1612,11 @@ function submitPemesanan() {
         });
       }
 
-      $("#modalKategori").modal("hide");
+      $("#modalPemesanan").modal("hide");
       $(".modal-backdrop").remove();
 
       // Open pages success
-      kategori_inventaris();
+      pemesanan_perjalanan();
     },
     error: function (error) {
       Swal.fire({
@@ -1550,7 +1624,7 @@ function submitPemesanan() {
         title: "Oops...",
         text: error.responseJSON.message,
       });
-      $("#modal").modal("hide");
+      $("#modalPemesanan").modal("hide");
       $(".modal-backdrop").remove();
     },
   });
@@ -1558,7 +1632,7 @@ function submitPemesanan() {
 function formHapusPemesanan(id) {
   $.ajax({
     type: "GET",
-    url: baseUrl + "kategori/" + id,
+    url: baseUrl + "pemesanan_perjalanan/" + id,
 
     success: function (response) {
       var kt = response.data[0];
@@ -1599,7 +1673,7 @@ function hapusPemesanan() {
         });
       }
       // open pages success
-      kategori_inventaris();
+      pemesanan_perjalanan();
 
       $("#modalHapusKategori").modal("hide");
       $(".modal-backdrop").remove();
