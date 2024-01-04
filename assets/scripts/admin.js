@@ -57,6 +57,7 @@ function dashboard() {
   });
 }
 
+// Role Pengguna
 function users() {
   $.ajax({
     url: "../admin/pages/users.html",
@@ -127,7 +128,6 @@ function users() {
     },
   });
 }
-
 function tambahModal() {
   $("#id").val("");
   $("#nama_lengkap").val("");
@@ -162,7 +162,6 @@ function formEditPengguna(id) {
     },
   });
 }
-
 function formHapusPengguna(id) {
   $.ajax({
     type: "GET",
@@ -184,7 +183,6 @@ function formHapusPengguna(id) {
     },
   });
 }
-
 function submitPengguna() {
   var form = document.getElementById("formPengguna");
   var formData = new FormData(form);
@@ -230,7 +228,6 @@ function submitPengguna() {
     },
   });
 }
-
 function hapusPengguna() {
   $.ajax({
     url: baseUrl + "users/" + $("#hapusButton").attr("data-id"),
@@ -406,7 +403,7 @@ function pembayaran() {
   });
 }
 
-// Bagian Inventaris Barang
+// Role Inventaris
 function inventaris() {
   $.ajax({
     url: "../admin/pages/inventaris/daftar_inventaris.html",
@@ -452,8 +449,8 @@ function inventaris() {
             render: function (data, type, v) {
               return `
                       <div class="text-center">
-                      <a role="button" onclick="tambahDestinasi(${v.id})" class="btn btn-sm btn-info"><i class="fas fa-edit"></i></a>
-                      <a role="button" data-toggle="modal" data-target="#hapusDestinasi${v.id}" class="btn btn-sm btn-danger"><i class="fas fa-trash"></i></a>
+                      <a role="button" onclick="formEditInventaris(${v.id})" class="btn btn-sm btn-info"><i class="fas fa-edit"></i></a>
+                      <a role="button" onclick="formHapusInventaris(${v.id})" class="btn btn-sm btn-danger"><i class="fas fa-trash"></i></a>
                       </div>
                     `;
             },
@@ -464,7 +461,163 @@ function inventaris() {
     },
   });
 }
+function tambahModalInventaris() {
+  getKateogoriSelect();
+  $("#id").val("");
+  $("#nama_inventaris").val("");
+  $("#kategori_id").val("1");
+  $("#durasi_sewa").val("perhari");
+  $("#harga_sewa").val("");
+  $("#stok").val("");
+  $("#Status").val("tersedia");
+  $("#deskripsi").val("");
+  $("#keterangan_tambahan").val("");
+  $("#customFile").val("");
+  $("#modalInventaris").modal("show");
+}
+function formEditInventaris(id) {
+  $.ajax({
+    type: "GET",
+    url: baseUrl + "inventaris/" + id,
 
+    success: function (response) {
+      getKateogoriSelect();
+
+      var kt = response.data[0];
+      $("#id").val(kt.id);
+      $("#nama_inventaris").val(kt.nama_barang);
+      $("#kategori_id").val(kt.kategori_id);
+      $("#durasi_sewa").val(kt.durasi_sewa);
+      $("#harga_sewa").val(kt.harga_sewa);
+      $("#stok").val(kt.stok);
+      $("#Status").val(kt.status);
+      $("#deskripsi").val(kt.deskripsi);
+      $("#keterangan_tambahan").val(kt.informasi_tambahan);
+
+      // Selected Status Option
+      $("#kategori_id option[value='" + kt.kategori_id + "']").prop("selected", true);
+
+      $("#status option[value='" + kt.status + "']").prop("selected", true);
+
+      $("#modalInventaris").modal("show");
+    },
+    error: function (error) {
+      Swal.fire({
+        icon: "error",
+        title: "Oops...",
+        text: error.responseJSON.message,
+      });
+    },
+  });
+}
+function formHapusInventaris(id) {
+  $.ajax({
+    type: "GET",
+    url: baseUrl + "inventaris/" + id,
+
+    success: function (response) {
+      var item = response.data[0];
+      $("#hapusButtonInventaris").attr("data-id", item.id);
+      $("#nama_hapus").text(item.nama_barang);
+
+      $("#modalHapusInventaris").modal("show");
+    },
+    error: function (error) {
+      Swal.fire({
+        icon: "error",
+        title: "Oops...",
+        text: error.responseJSON.message,
+      });
+    },
+  });
+}
+function submitInventaris() {
+  var form = document.getElementById("formInventaris");
+  var formData = new FormData(form);
+
+  $.ajax({
+    type: "POST",
+    url: baseUrl + "inventaris/",
+    data: formData,
+    processData: false,
+    contentType: false,
+    success: function (response) {
+      if (response && (response.status === 200 || response.status === 201)) {
+        Swal.fire({
+          icon: "success",
+          title: "Sukses",
+          text: response.data.messages,
+          toast: true,
+          position: "top-end",
+          showConfirmButton: false,
+          timer: 3000,
+        });
+      } else {
+        Swal.fire({
+          icon: "error",
+          title: "Oops...",
+          text: response.data.messages,
+        });
+      }
+
+      $("#modalInventaris").modal("hide");
+      $(".modal-backdrop").remove();
+
+      // Open pages success
+      inventaris();
+    },
+    error: function (error) {
+      Swal.fire({
+        icon: "error",
+        title: "Oops...",
+        text: error.responseJSON.message,
+      });
+      $("#modalInventaris").modal("hide");
+      $(".modal-backdrop").remove();
+    },
+  });
+}
+function hapusInventaris() {
+  $.ajax({
+    url: baseUrl + "inventaris/" + $("#hapusButtonInventaris").attr("data-id"),
+    method: "DELETE",
+    success: function (response) {
+      if (response && response.status === 204) {
+        Swal.fire({
+          icon: "success",
+          title: "Sukses",
+          text: "Data inventaris berhasil dihapus",
+          toast: true,
+          position: "top-end",
+          showConfirmButton: false,
+          timer: 3000,
+        });
+      } else {
+        Swal.fire({
+          icon: "error",
+          title: "Oops...",
+          text: error.responseJSON.message,
+        });
+      }
+      // open pages success
+      inventaris();
+
+      $("#modalHapusInventaris").modal("hide");
+      $(".modal-backdrop").remove();
+    },
+    error: function (error) {
+      $("#modalHapusInventaris").modal("hide");
+      $(".modal-backdrop").remove();
+      Swal.fire({
+        icon: "error",
+        title: "Oops...",
+        text: error.responseJSON.message,
+      });
+    },
+  });
+}
+
+// Role Kategori Inventaris
 function kategori_inventaris() {
   $.ajax({
     url: "../admin/pages/inventaris/kategori_inventaris.html",
@@ -619,7 +772,7 @@ function submitKategori() {
         title: "Oops...",
         text: error.responseJSON.message,
       });
-      $("#modalKategori").modal("hide");
+      $("#modal").modal("hide");
       $(".modal-backdrop").remove();
     },
   });
@@ -664,6 +817,7 @@ function hapusKategori() {
   });
 }
 
+// Role Destinasi Wisata
 function destinasi() {
   $.ajax({
     url: "../admin/pages/perjalanan/destinasi.html",
@@ -702,13 +856,147 @@ function destinasi() {
               return `
               <div class="text-center">
               <a role="button" onclick="tambahDestinasi(${v.id})" class="btn btn-sm btn-info"><i class="fas fa-edit"></i></a>
-              <a role="button" data-toggle="modal" data-target="#hapusDestinasi${v.id}" class="btn btn-sm btn-danger"><i class="fas fa-trash"></i></a>
+              <a role="button" onclick="hapusDestinasi(${v.id})" class="btn btn-sm btn-danger"><i class="fas fa-trash"></i></a>
               </div>
             `;
             },
             className: "text-center",
           },
         ],
+      });
+    },
+  });
+}
+function tambahModalDestinasi() {
+  $("#id").val("");
+  $("#nama_kategori").val("");
+  $("#modalKategori").modal("show");
+}
+function formEditDestinasi(id) {
+  $.ajax({
+    type: "GET",
+    url: baseUrl + "kategori/" + id,
+
+    success: function (response) {
+      console.log(id);
+
+      var kt = response.data[0];
+      $("#id").val(kt.id);
+      $("#nama_kategori").val(kt.nama_kategori);
+
+      $("#modalKategori").modal("show");
+    },
+    error: function (error) {
+      Swal.fire({
+        icon: "error",
+        title: "Oops...",
+        text: error.responseJSON.message,
+      });
+    },
+  });
+}
+function formHapusDestinasi(id) {
+  $.ajax({
+    type: "GET",
+    url: baseUrl + "inventaris/" + id,
+
+    success: function (response) {
+      var item = response.data[0];
+      $("#hapusButtonInventaris").attr("data-id", item.id);
+      $("#nama_hapus").text(item.nama_barang);
+
+      $("#modalHapusKategori").modal("show");
+    },
+    error: function (error) {
+      Swal.fire({
+        icon: "error",
+        title: "Oops...",
+        text: error.responseJSON.message,
+      });
+    },
+  });
+}
+function submitDestinasi() {
+  var form = document.getElementById("formKategori");
+  var formData = new FormData(form);
+
+  $.ajax({
+    type: "POST",
+    url: baseUrl + "kategori/",
+    data: formData,
+    processData: false,
+    contentType: false,
+    success: function (response) {
+      if (response && (response.status === 200 || response.status === 201)) {
+        Swal.fire({
+          icon: "success",
+          title: "Sukses",
+          text: response.data.messages,
+          toast: true,
+          position: "top-end",
+          showConfirmButton: false,
+          timer: 3000,
+        });
+      } else {
+        Swal.fire({
+          icon: "error",
+          title: "Oops...",
+          text: response.data.messages,
+        });
+      }
+
+      $("#modalKategori").modal("hide");
+      $(".modal-backdrop").remove();
+
+      // Open pages success
+      kategori_inventaris();
+    },
+    error: function (error) {
+      Swal.fire({
+        icon: "error",
+        title: "Oops...",
+        text: error.responseJSON.message,
+      });
+      $("#modalKategori").modal("hide");
+      $(".modal-backdrop").remove();
+    },
+  });
+}
+function hapusDestinasi() {
+  $.ajax({
+    url: baseUrl + "inventaris/" + $("#hapusButtonInventaris").attr("data-id"),
+    method: "DELETE",
+    success: function (response) {
+      if (response && response.status === 204) {
+        Swal.fire({
+          icon: "success",
+          title: "Sukses",
+          text: "Inventaris berhasil ditambahkan",
+          toast: true,
+          position: "top-end",
+          showConfirmButton: false,
+          timer: 3000,
+        });
+      } else {
+        Swal.fire({
+          icon: "error",
+          title: "Oops...",
+          text: error.responseJSON.message,
+        });
+      }
+      // open pages success
+      inventaris();
+
+      $("#modalHapusInventaris").modal("hide");
+      $(".modal-backdrop").remove();
+    },
+    error: function (error) {
+      $("#modalHapusInventaris").modal("hide");
+      $(".modal-backdrop").remove();
+      Swal.fire({
+        icon: "error",
+        title: "Oops...",
+        text: error.responseJSON.message,
       });
     },
   });
@@ -771,6 +1059,7 @@ function paket_perjalanan() {
   });
 }
 
+// Role Kategori Perjalanan
 function kategori_perjalanan() {
   $.ajax({
     url: "../admin/pages/perjalanan/kategori.html",
@@ -818,6 +1107,7 @@ function kategori_perjalanan() {
   });
 }
 
+// Role Pemesanan Perjalanan
 function pemesanan_perjalanan() {
   $.ajax({
     url: "../admin/pages/perjalanan/pemesanan.html",
@@ -881,6 +1171,7 @@ function pemesanan_perjalanan() {
   });
 }
 
+// Role Bank
 function bank() {
   $.ajax({
     url: "../admin/pages/pengaturan/bank.html",
@@ -927,6 +1218,7 @@ function bank() {
   });
 }
 
+// Role Daftar Bank
 function daftar_bank() {
   $.ajax({
     url: "../admin/pages/pengaturan/daftar_bank.html",
@@ -971,6 +1263,7 @@ function daftar_bank() {
   });
 }
 
+// Role Duitku Payment
 function duitku_payment() {
   $.ajax({
     url: "../admin/pages/pengaturan/duitku.html",
@@ -981,8 +1274,61 @@ function duitku_payment() {
       setTitle("Setting Duitku");
     },
   });
+  $.ajax({
+    type: "GET",
+    url: baseUrl + "duitku/1",
+
+    success: function (response) {
+      var kt = response.data[0];
+      $("#environment").val(kt.environment);
+      $("#merchant_code").val(kt.merchant_code);
+      $("#apikey_duitku").val(kt.apikey_duitku);
+
+      $("#environment option[value='" + kt.environment + "']").prop("selected", true);
+    },
+    error: function (error) {
+      Swal.fire({
+        icon: "error",
+        title: "Oops...",
+        text: error.responseJSON.message,
+      });
+    },
+  });
+}
+function submitDuitku() {
+  var form = document.getElementById("formDuitku");
+  var formData = new FormData(form);
+
+  $.ajax({
+    type: "POST",
+    url: baseUrl + "duitku/",
+    data: formData,
+    processData: false,
+    contentType: false,
+    success: function (response) {
+      if (response && (response.status === 200 || response.status === 201)) {
+        Swal.fire({
+          icon: "success",
+          title: "Sukses",
+          text: response.data.messages,
+          toast: true,
+          position: "top-end",
+          showConfirmButton: false,
+          timer: 3000,
+        });
+      } else {
+        Swal.fire({
+          icon: "error",
+          title: "Oops...",
+          text: response.data.messages,
+        });
+      }
+      duitku_payment();
+    },
+  });
 }
 
+// Role Whatsapp Gateway
 function whatsapp_gateway() {
   $.ajax({
     url: "../admin/pages/pengaturan/wablas.html",
@@ -993,14 +1339,65 @@ function whatsapp_gateway() {
       setTitle("Setting Whatsapp Gateway Apikey");
     },
   });
+  $.ajax({
+    type: "GET",
+    url: baseUrl + "wablas/1",
+
+    success: function (response) {
+      var kt = response.data[0];
+      $("#domain_api").val(kt.domain_api);
+      $("#token_api").val(kt.token_api);
+    },
+    error: function (error) {
+      Swal.fire({
+        icon: "error",
+        title: "Oops...",
+        text: error.responseJSON.message,
+      });
+    },
+  });
+}
+function submitWablas() {
+  var form = document.getElementById("formWablas");
+  var formData = new FormData(form);
+
+  $.ajax({
+    type: "POST",
+    url: baseUrl + "wablas/",
+    data: formData,
+    processData: false,
+    contentType: false,
+    success: function (response) {
+      if (response && (response.status === 200 || response.status === 201)) {
+        Swal.fire({
+          icon: "success",
+          title: "Sukses",
+          text: response.data.messages,
+          toast: true,
+          position: "top-end",
+          showConfirmButton: false,
+          timer: 3000,
+        });
+      } else {
+        Swal.fire({
+          icon: "error",
+          title: "Oops...",
+          text: response.data.messages,
+        });
+      }
+      whatsapp_gateway();
+    },
+  });
 }
 
+// function ubah title
 function setTitle(title) {
   document.title = title;
   $("#title").text(title);
   $("#title-header").text(title);
 }
 
+// Fungction preload UI
 function open_preload() {
   $.ajax({
     type: "GET",
@@ -1021,6 +1418,7 @@ function open_preload() {
   });
 }
 
+// get name from id pengguna
 function renderNamaLengkap(data, type, v) {
   $.ajax({
     url: baseUrl + "users/" + v.user_id,
@@ -1034,6 +1432,7 @@ function renderNamaLengkap(data, type, v) {
   return data;
 }
 
+// get name kategori from id
 function renderNamaKategori(data, type, v) {
   $.ajax({
     url: baseUrl + "kategori/" + v.kategori_id,
@@ -1047,6 +1446,7 @@ function renderNamaKategori(data, type, v) {
   return data;
 }
 
+// get name kategori perjalanan from id
 function renderNamaKategoriPerjalanan(data, type, v) {
   $.ajax({
     url: baseUrl + "kategori_perjalanan/" + v.kategori_id,
@@ -1060,6 +1460,7 @@ function renderNamaKategoriPerjalanan(data, type, v) {
   return data;
 }
 
+// get name paket perjalanan from id
 function renderPaketPerjalanan(data, type, v) {
   $.ajax({
     url: baseUrl + "paket_perjalanan/" + v.paket_id,
@@ -1073,6 +1474,7 @@ function renderPaketPerjalanan(data, type, v) {
   return data;
 }
 
+//get name bank from id
 function renderBank(data, type, v) {
   $.ajax({
     url: baseUrl + "daftar_bank/" + v.daftar_bank_id,
@@ -1084,4 +1486,26 @@ function renderBank(data, type, v) {
   });
 
   return data;
+}
+
+// Selection Kategori_id for option form
+function getKateogoriSelect() {
+  $.ajax({
+    type: "GET",
+    url: baseUrl + "kategori",
+    success: function (response) {
+      if (response.data) {
+        $("#kategori_id").empty();
+
+        $.each(response.data, function (index, kategori) {
+          $("#kategori_id").append('<option value="' + kategori.id + '">' + kategori.nama_kategori + "</option>");
+        });
+      } else {
+        console.log("Respon tidak sesuai format yang diharapkan");
+      }
+    },
+    error: function (error) {
+      console.error("Terjadi kesalahan:", error);
+    },
+  });
 }

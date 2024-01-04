@@ -4,26 +4,29 @@
       <div class="col-sm-6">
         <div class="card">
           <div class="card-header">
-            <h3 class="text-title">Duitku Payment Setting</h3>
+            <h4 class="text-title">Duitku Payment Setting</h4>
           </div>
           <div class="card-body">
-            <form id="updateDuitku">
+            <form id="formDuitku">
               <div class="form-group">
                 <label for="environment">Environment</label>
-                <input type="text" id="environment" class="form-control" name="environment" required />
+                <select name="environment" id="environment" class="form-control">
+                  <option value="production">Production</option>
+                  <option value="sandbox">SandBox</option>
+                </select>
               </div>
               <div class="form-group">
-                <label for="merchan_code">Merchancode</label>
-                <input type="text" id="merchan_code" class="form-control" name="merchan_code" required />
+                <label for="merchant_code">Merchancode</label>
+                <input type="text" id="merchant_code" class="form-control" name="merchant_code" required />
               </div>
               <div class="form-group">
-                <label for="apikey">Apikey</label>
-                <input type="text" id="apikey" class="form-control" name="apikey" required />
+                <label for="apikey_duitku">Apikey</label>
+                <input type="password" id="apikey_duitku" class="form-control" name="apikey_duitku" required />
               </div>
             </form>
           </div>
           <div class="card-footer">
-            <button class="btn btn-primary float-right" type="submit">Simpan perubahan</button>
+            <button class="btn btn-primary float-right" role="button" onclick="submitDuitku()">Simpan perubahan</button>
           </div>
         </div>
       </div>

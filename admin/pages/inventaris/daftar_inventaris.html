@@ -3,7 +3,7 @@
     <div class="card">
       <div class="card-header">
         <h3 class="card-title">Daftar Inventaris</h3>
-        <button role="button" class="btn btn-danger btn-sm float-right" data-toggle="modal" data-target="#tambahBarang">
+        <button role="button" class="btn btn-primary btn-sm float-right" onclick="tambahModalInventaris()">
           <i class="fa fa-user-plus"></i> Tambah Barang
         </button>
       </div>
@@ -30,7 +30,7 @@
 </section>
 
 <!-- Form Pengguna -->
-<div class="modal fade" id="modalKategori">
+<div class="modal fade" id="modalInventaris">
   <div class="modal-dialog">
     <div class="modal-content">
       <div class="modal-header">
@@ -40,31 +40,78 @@
         </button>
       </div>
       <div class="modal-body">
-        <form id="formKategori" enctype="multipart/form-data">
+        <form id="formInventaris" enctype="multipart/form-data">
           <input type="hidden" id="id" name="id" />
           <div class="form-group">
-            <label for="nama_kategori">Nama Kategori <small class="text-danger"> *Tidak boleh kosong</small> </label>
-            <input type="text" class="form-control" id="nama_kategori" name="nama_kategori" required />
-          </div>
-          <div class="form-group">
-            <label for="customFile">Upload Foto Kategori <small class="text-success"> *Optional</small></label>
+            <label for="customFile">Upload Foto Inventaris <small class="text-success"> *Optional</small></label>
             <div class="custom-file">
               <input type="file" class="custom-file-input" id="customFile" name="gambar" />
               <label class="custom-file-label" for="customFile">Upload foto kamu disini...</label>
             </div>
           </div>
+          <hr />
+          <div class="row">
+            <div class="col-sm-6">
+              <div class="form-grup">
+                <label for="kategori_id">Kategori</label>
+                <select name="kategori_id" id="kategori_id" class="form-control"></select>
+              </div>
+            </div>
+            <div class="col-sm-6">
+              <div class="form-group">
+                <label for="durasi_sewa">Durasi Sewa</label>
+                <select name="durasi_sewa" id="durasi_sewa" class="form-control">
+                  <option value="perhari">Perhari</option>
+                  <option value="perjam">Perjam</option>
+                </select>
+              </div>
+            </div>
+          </div>
+          <div class="form-group mt-1">
+            <label for="nama_inventaris">Nama Inventaris </label>
+            <input type="text" class="form-control" id="nama_inventaris" name="nama_inventaris" required />
+          </div>
+          <div class="form-group">
+            <label for="harga_sewa">Harga Sewa</label>
+            <input type="number" class="form-control" id="harga_sewa" name="harga_sewa" />
+          </div>
+          <div class="row">
+            <div class="col-sm-6">
+              <div class="form-group">
+                <label for="stok">Stok</label>
+                <input type="number" class="form-control" id="stok" name="stok" />
+              </div>
+            </div>
+            <div class="col-sm-6">
+              <div class="form-group">
+                <label for="Status">Status</label>
+                <select name="status" id="Status" class="form-control">
+                  <option value="tersedia">Tersedia</option>
+                  <option value="tidak_tersedia">Tidak Tersedia</option>
+                </select>
+              </div>
+            </div>
+          </div>
+          <div class="form-group">
+            <label for="deskripsi">Deskripsi</label>
+            <textarea name="deskripsi" id="deskripsi" class="form-control"></textarea>
+          </div>
+          <div class="form-group">
+            <label for="keterangan_tambahan">Keterangan Tambahan</label>
+            <input type="text" class="form-control" name="keterangan_tambahan" id="keterangan_tambahan" />
+          </div>
         </form>
       </div>
       <div class="modal-footer float-right">
         <button type="button" class="btn btn-outline-secondary" data-dismiss="modal">Close</button>
-        <button type="button" onclick="submitKategori()" class="btn btn-primary">Simpan</button>
+        <button type="button" onclick="submitInventaris()" class="btn btn-primary">Simpan</button>
       </div>
     </div>
   </div>
 </div>
 
 <!-- Modal Hapus Pengguna -->
-<div class="modal fade" id="modalHapusKategori">
+<div class="modal fade" id="modalHapusInventaris">
   <div class="modal-dialog">
     <div class="modal-content">
       <div class="modal-header">
@@ -80,7 +127,7 @@
       </div>
       <div class="modal-footer float-right">
         <button type="button" class="btn btn-outline-secondary" data-dismiss="modal">Close</button>
-        <button type="button" onclick="hapusKategori()" id="hapusButtonKategori" class="btn btn-danger">Hapus</button>
+        <button type="button" onclick="hapusInventaris()" id="hapusButtonInventaris" class="btn btn-danger">Hapus</button>
       </div>
     </div>
   </div>
