@@ -204,52 +204,52 @@ function detail_produk(id) {
       document.title = "Produk";
       $(".header-title .title").text("Produk");
       $("h1 .title").text("Produk");
+      fetch_detailProduk(id);
+    },
+  });
+}
+function fetch_detailProduk(id) {
+  // fetch detail produk
+  $.ajax({
+    method: "GET",
+    url: baseUrl + "inventaris/" + id,
+    dataType: "JSON",
+    success: function (response) {
+      $("#load_produk").html("");
+      if (response.status === 200) {
+        let destinasi = "";
 
-      // fetch detail produk
-      $.ajax({
-        method: "GET",
-        url: baseUrl + "inventaris/" + id,
-        dataType: "JSON",
-        success: function (response) {
-          $("#load_produk").html("");
-          if (response.status === 200) {
-            let destinasi = "";
+        destinasi += `
+        <img src="${response.data[0].gambar}" class="img-fluid mt-2" />
+        <h1 class="mb-0 mt-3">${response.data[0].nama_barang}</h1>
+        <p>${response.data[0].deskripsi}</p>
 
-            destinasi += `
-                <img src="${response.data[0].gambar}" class="img-fluid mt-2" />
-                <h1 class="mb-0 mt-3">${response.data[0].nama_barang}</h1>
-                <p>${response.data[0].deskripsi}</p>
+        <div class="d-flex">
+          <div class="me-auto align-self-center">
+            <h2 class="pt-1 me-3 font-700">${formatCurrency(response.data[0].harga_sewa)}</h2>
+            <p class="font-400 font-10 mt-n2 opacity-50">*Harga tertera belum termasuk biaya admin.</p>
+          </div>
+          <div class="align-self-center">
+            <a href="#" data-menu="menu-heart" class="icon icon-xs bg-white shadow-xl color-red-dark rounded-xl"
+              ><i class="fa fa-heart"></i
+            ></a>
+            <a href="#" data-menu="menu-share" class="icon icon-xs bg-white shadow-xl color-blue-dark rounded-xl ms-1"
+              ><i class="fa fa-share-alt"></i
+            ></a>
+          </div>
+        </div>
 
-                <div class="d-flex">
-                  <div class="me-auto align-self-center">
-                    <h2 class="pt-1 me-3 font-700">${formatCurrency(response.data[0].harga_sewa)}</h2>
-                    <p class="font-400 font-10 mt-n2 opacity-50">*Harga tertera belum termasuk biaya admin.</p>
-                  </div>
-                  <div class="align-self-center">
-                    <a href="#" data-menu="menu-heart" class="icon icon-xs bg-white shadow-xl color-red-dark rounded-xl"
-                      ><i class="fa fa-heart"></i
-                    ></a>
-                    <a href="#" data-menu="menu-share" class="icon icon-xs bg-white shadow-xl color-blue-dark rounded-xl ms-1"
-                      ><i class="fa fa-share-alt"></i
-                    ></a>
-                  </div>
-                </div>
+        <div class="divider mt-3"></div>
 
-                <div class="divider mt-3"></div>
-
-                <a role="button" onclick="formSewa(${
-                  response.data[0].id
-                })" class="btn btn-full btn-m rounded-s font-600 gradient-highlight">Mulai Sewa</a>
-
-            
-             `;
-            $("#load_produk").append(destinasi);
-          }
-        },
-        error: function (xhr, status, error) {
-          console.error("Error fetching data:", error);
-        },
-      });
+        <a role="button" onclick="formSewa(${
+          response.data[0].id
+        })" class="btn btn-full btn-m rounded-s font-600 gradient-highlight">Mulai Sewa</a>
+         `;
+        $("#load_produk").append(destinasi);
+      }
+    },
+    error: function (xhr, status, error) {
+      console.error("Error fetching data:", error);
     },
   });
 }
@@ -271,6 +271,241 @@ function formSewa(id) {
       document.title = "Transaksi";
       $(".header-title .title").text("Transaksi");
       $("h1 .title").text("Transaksi");
+      $.ajax({
+        method: "GET",
+        url: baseUrl + "inventaris/" + id,
+        dataType: "JSON",
+        success: function (response) {
+          $("#load_form").html("");
+          if (response.status === 200) {
+            let destinasi = "";
+
+            destinasi += `
+            <div class="page-content">
+  <div class="card card-style">
+    <div class="content">
+      <p class="font-600 color-highlight mb-n1"></p>
+      <h3>Rental Details</h3>
+      <p>Silahkan selesaikan pembayaran anda.</p>
+
+      <div class="d-flex mb-3">
+        <div>
+          <img src="${response.data[0].gambar}" width="110" class="rounded-s shadow-xl" />
+        </div>
+        <div class="ps-3 w-100">
+          <h2>${response.data[0].nama_barang}</h2>
+          <h5 class="font-500">${formatCurrency(response.data[0].harga_sewa)}</h5>
+          <p class="mb-0 color-highlight">1x Item</p>
+        </div>
+      </div>
+      <div class="mt-2 mb-4">
+        <a href="#" class="float-start mt-1 ms-4 font-11 color-theme font-12"><i class="fa fa-trash color-red-dark me-1"></i> Remove</a>
+        <div class="clearfix"></div>
+      </div>
+
+      <div class="divider"></div>
+    </div>
+
+    <div class="card card-style">
+      <div class="content mb-2 mt-3">
+        <div class="d-flex">
+          <div class="pe-4 w-60">
+            <p class="font-600 color-highlight mb-0 font-13">Your Total</p>
+            <h1>${formatCurrency(response.data[0].harga_sewa)}</sup></h1>
+          </div>
+          <div class="w-100 pt-1">
+            <h6 class="font-14 font-700">Total<span class="float-end color-green-dark">${formatCurrency(
+              response.data[0].harga_sewa
+            )}</span></h6>
+            <div class="divider mb-2 mt-1"></div>
+            <h6 class="font-14 font-700">Discount<span class="float-end color-red-dark">0%</span></h6>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card card-style">
+      <div class="content">
+        <h3>Pilih Metode Pembayaran</h3>
+        <p>untuk pembayaran online kamu dapat membayar lewat virual account bank, alfa, indomart, dsb.</p>
+        <div class="fac fac-radio fac-highlight">
+          <span></span>
+          <input id="box2-fac-radio" type="radio" name="rad" value="1" checked />
+          <label for="box2-fac-radio">Duitku Payment</label>
+        </div>
+        <div class="fac fac-radio fac-highlight">
+          <span></span>
+          <input id="box3-fac-radio" type="radio" name="rad" value="1" />
+          <label for="box3-fac-radio">Bank Transfer</label>
+        </div>
+      </div>
+    </div>
+    <div class="card card-style">
+      <div class="content">
+        <h3>Detail Pemesanan</h3>
+        <p>silahkan isi formulir di bawah ini.</p>
+        <div class="input-style has-borders no-icon input-style-always-active validate-field mb-4">
+          <input type="name" class="form-control validate-name" id="form2" placeholder="example. Annisa Maharani" />
+          <label for="form2" class="color-blue-dark font-500">Nama Lengkap</label>
+          <i class="fa fa-times disabled invalid color-red-dark"></i>
+          <i class="fa fa-check disabled valid color-green-dark"></i>
+          <em>(required)</em>
+        </div>
+        <div class="input-style has-borders no-icon validate-field input-style-always-active mb-4">
+          <input type="number" class="form-control validate-number" id="form2a" placeholder="example. 08310xxxxxx" />
+          <label for="form2a" class="color-blue-dark font-500">Nomor Telpon</label>
+          <i class="fa fa-times disabled invalid color-red-dark"></i>
+          <i class="fa fa-check disabled valid color-green-dark"></i>
+          <em>(required)</em>
+        </div>
+        <div class="row mb-0">
+          <div class="col-6">
+            <div class="input-style has-borders no-icon validate-field input-style-always-active mb-4">
+              <input
+                type="date"
+                class="form-control validate-name"
+                id="form234512"
+                value="2024-12-31"
+                max="2024-12-01"
+                min="2021-01-01"
+                placeholder="Awal Sewa"
+              />
+              <label for="form234512" class="color-blue-dark font-500">Awal Sewa</label>
+              <i class="fa fa-times disabled invalid color-red-dark"></i>
+              <i class="fa fa-check disabled valid color-green-dark"></i>
+              <em></em>
+            </div>
+          </div>
+          <div class="col-6">
+            <div class="input-style has-borders no-icon validate-field input-style-always-active mb-4">
+              <input
+                type="date"
+                class="form-control validate-name"
+                id="form234512"
+                value="2024-1-31"
+                max="2024-01-01"
+                min="2021-01-01"
+                placeholder="Akhir Sewa"
+              />
+              <label for="form234512" class="color-blue-dark font-500">Akhir Sewa</label>
+              <i class="fa fa-times disabled invalid color-red-dark"></i>
+              <i class="fa fa-check disabled valid color-green-dark"></i>
+              <em></em>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card card-style">
+      <div class="content">
+        <p class="font-600 color-highlight mb-n1">Extra Information</p>
+        <h3>Catatan Tambahan</h3>
+        <p>Jika ada silahkan berikan kami catatan tambahan untuk detail order anda!.</p>
+        <div class="input-style has-borders input-style-always-active no-icon mb-4">
+          <textarea id="form7" placeholder="" style="height: 150px"></textarea>
+          <label for="form7" class="color-highlight">Enter your Message</label>
+          <em class="mt-n3">(required)</em>
+        </div>
+      </div>
+    </div>
+
+    <a role="button" onclick="invoices(${
+      response.data[0].id
+    })" class="close-menu btn btn-margins btn-full gradient-blue font-13 btn-l font-600 mt-3 rounded-sm">Selesaikan Pembayaran</a>
+  </div>
+</div>
+
+             `;
+            $("#load_form").append(destinasi);
+          }
+        },
+        error: function (xhr, status, error) {
+          console.error("Error fetching data:", error);
+        },
+      });
+    },
+  });
+}
+
+function invoices(id) {
+  open_preload();
+  $.ajax({
+    type: "GET",
+    url: "pages/invoice.html",
+    data: "data",
+    dataType: "html",
+    success: function (response) {
+      $("#content").html(response);
+      $("#shop").removeClass("active-nav");
+      $("#kategori").removeClass("active-nav");
+      $("#home").removeClass("active-nav");
+      $("#transaksi").addClass("active-nav");
+      $("#profil").removeClass("active-nav");
+      document.title = "Transaksi";
+      $(".header-title .title").text("Transaksi");
+      $("h1 .title").text("Transaksi");
+      $.ajax({
+        method: "GET",
+        url: baseUrl + "inventaris/" + id,
+        dataType: "JSON",
+        success: function (response) {
+          $("#load_invoice").html("");
+          if (response.status === 200) {
+            let destinasi = "";
+
+            destinasi += `
+            <div class="content">
+            <div class="d-flex">
+              <div class="mt-1">
+                <h1>Transaksi Berhasil!</h1>
+              </div>
+             
+            </div>
+          
+            
+            <div class="divider"></div>
+          
+            <div class="d-flex mb-3">
+              <div>
+                <img src="${response.data[0].gambar}" width="110" class="rounded-s shadow-xl" />
+              </div>
+              <div class="ps-3 w-100">
+                <p class="mb-0 color-highlight">1x Item</p>
+                <h1>${formatCurrency(response.data[0].harga_sewa)}</h1>
+                <h5 class="font-500"></h5>
+              </div>
+            </div>
+          
+          
+            <div class="divider mt-4"></div>
+          
+            <div class="d-flex mb-3">
+              <div><h5 class="opacity-50 font-500">Shipping</h5></div>
+              <div class="ms-auto"><h5>${formatCurrency(response.data[0].harga_sewa)}</h5></div>
+            </div>
+            <div class="d-flex mb-3">
+              <div><h5 class="opacity-50 font-500">Taxes</h5></div>
+              <div class="ms-auto"><h5>0%</h5></div>
+            </div>
+            <div class="d-flex mb-3">
+              <div><h3 class="font-700">Grand Total</h3></div>
+              <div class="ms-auto"><h3>${formatCurrency(response.data[0].harga_sewa)}</h3></div>
+            </div>
+          
+            <div class="divider"></div>
+          
+            <a href="#" class="btn btn-full btn-l rounded-s font-600 gradient-highlight">Download Invoice in PDF</a>
+          </div>
+          
+             `;
+            $("#load_invoice").append(destinasi);
+          }
+        },
+        error: function (xhr, status, error) {
+          console.error("Error fetching data:", error);
+        },
+      });
     },
   });
 }
@@ -335,5 +570,5 @@ function open_preload() {
 
 // Function to format currency
 function formatCurrency(amount) {
-  return "$" + parseFloat(amount).toFixed(2);
+  return "IDR." + parseFloat(amount).toFixed(2);
 }
